@@ -1,0 +1,37 @@
+/*
+  base.css
+  - 브라우저마다 다른 기본 스타일을 통일하는 리셋
+  - 버튼, body처럼 페이지마다 반복되는 공통 요소 스타일
+*/
+
+* {
+  box-sizing: border-box; /* padding이 요소 크기를 밀어내지 않게 통일 */
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--ink);
+  background-color: var(--paper);
+  line-height: 1.6;
+}
+
+button {
+  font-family: inherit;
+  font-size: 1rem;
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  background-color: var(--teal);
+  color: var(--paper);
+  padding: var(--space-2) var(--space-3);
+}
+
+button:hover {
+  opacity: 0.85; /* 클릭 가능함을 시각적으로 알려주는 간단한 반응 */
+}
+
+p {
+  color: var(--ink-2);
+}

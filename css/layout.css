@@ -1,0 +1,32 @@
+/*
+  layout.css
+  - 화면 배치를 담당 (요소를 화면 중앙에 카드 형태로 배치)
+  - 색상이나 폰트 값은 직접 쓰지 않고 tokens.css의 변수를 가져다 쓴다
+*/
+
+.screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-3);
+}
+
+.card {
+  max-width: 480px;
+  width: 100%;
+  background-color: var(--soft);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: var(--space-4);
+  text-align: center;
+}
+
+.card h1 {
+  font-size: 1.5rem;
+  margin-bottom: var(--space-2);
+}
+
+.card p {
+  margin-bottom: var(--space-3);
+}
