@@ -1,0 +1,27 @@
+/*
+  tokens.css
+  - 프로젝트 전체에서 쓰는 색상·폰트·간격 값을 CSS 변수로만 모아둔 파일
+  - 여기서는 실제 스타일 규칙을 쓰지 않고 값만 선언한다 (다른 css가 이 변수를 가져다 씀)
+*/
+
+:root {
+  /* 색상: 상태(양호/주의/위험)를 색으로 구분하기 위한 팔레트 */
+  --ink: #1B2630;    /* 진한 배경, 헤더 텍스트 */
+  --ink-2: #5A6B79;  /* 본문 보조 텍스트 */
+  --ink-3: #93A2AE;  /* 가장 흐린 텍스트 (설명, 캡션) */
+  --soft: #EDF0F3;   /* 카드 배경 */
+  --line: #C3CDD6;   /* 테두리선 */
+  --amber: #C77A08;  /* 주의 상태 */
+  --teal: #2E6F70;   /* 양호 상태 */
+  --red: #B04A32;    /* 위험 상태 */
+  --paper: #FFFFFF;  /* 기본 배경 */
+
+  /* 폰트: Pretendard 우선, 없으면 시스템 기본 글꼴로 대체 */
+  --font-sans: 'Pretendard', system-ui, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+
+  /* 간격: 카드/버튼 여백을 통일하기 위한 기본 단위 */
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 40px;
+}
