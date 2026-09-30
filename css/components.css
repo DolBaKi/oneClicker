@@ -1,0 +1,95 @@
+/*
+  components.css
+  - 버튼·입력칸·에러 메시지·진행 표시처럼 여러 화면에서 반복되는 UI 조각 모음
+  - 색상은 직접 적지 않고 tokens.css에 정의한 변수만 가져다 쓴다
+*/
+
+/* ── 진행 표시 (1 · 2 · 3) ── */
+.steps {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-1);
+  list-style: none;
+  margin-bottom: var(--space-3);
+}
+
+.step {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background-color: var(--paper);
+  color: var(--ink-3);
+  font-size: 0.9rem;
+}
+
+/* 현재 진행 중인 단계만 진하게 */
+.step.is-active {
+  background-color: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+
+/* ── 버튼: base.css의 button 기본형을 쓰고 여기서 형태만 다듬는다 ── */
+.btn { width: 100%; padding: var(--space-2); font-weight: 600; }
+.btn-ghost { background-color: transparent; border: 1px solid var(--line); color: var(--ink); }
+
+/* ── 입력칸 한 묶음 (라벨 + 입력 + 에러 자리) ── */
+.field { margin-bottom: var(--space-3); }
+
+.field-label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.field-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+.field-input:focus { outline: 2px solid var(--teal); outline-offset: 1px; }
+
+/* 연도+월, 숫자+단위처럼 가로로 붙는 입력 */
+.field-row { display: flex; align-items: center; gap: var(--space-1); }
+.field-unit { color: var(--ink-2); white-space: nowrap; }
+
+/* ── 에러: 평소엔 숨기고, 필드에 is-error가 붙을 때만 보인다 ── */
+.field-error {
+  display: none;
+  margin-top: var(--space-1);
+  color: var(--red);
+  font-size: 0.85rem;
+}
+
+.field.is-error .field-input,
+.field.is-error .radio { border-color: var(--red); }
+.field.is-error .field-error { display: block; }
+
+/* ── 라디오 4개 묶음 ── */
+.radio-group { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-1); }
+
+.radio {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background-color: var(--paper);
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.radio input { accent-color: var(--teal); }

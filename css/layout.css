@@ -15,11 +15,30 @@
 .card {
   max-width: 480px;
   width: 100%;
+  margin: auto; /* 내용이 화면보다 길어져도 위쪽이 잘리지 않게 함 */
   background-color: var(--soft);
   border: 1px solid var(--line);
   border-radius: 12px;
   padding: var(--space-4);
   text-align: center;
+}
+
+/* 폼 화면: 라벨과 입력칸은 왼쪽 정렬이 읽기 편하다 */
+.card--form {
+  text-align: left;
+}
+
+/* 2단 구성처럼 폭이 더 필요한 화면 */
+.card--wide {
+  max-width: 720px;
+  text-align: left;
+}
+
+/* 좌우 2단 배치. 화면이 좁아지면 자동으로 1단으로 내려간다 */
+.two-col {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-3);
 }
 
 .card h1 {
