@@ -52,7 +52,7 @@ export function clearDeviceInfo() {
 
   체감 평가(subjective)를 실측(benchmark)에 섞지 않고 따로 보관하는 이유:
   둘이 어긋날 때가 중요한 정보이기 때문이다. 실측은 멀쩡한데 체감이 나쁘면
-  하드웨어 노후가 아니라 소프트웨어 문제일 수 있다. 5차시 분석에서 이 둘을 비교해 쓴다.
+  하드웨어 노후가 아니라 소프트웨어 문제일 수 있다. 4차시 분석에서 이 둘을 비교해 쓴다.
 */
 export function saveResult(result) {
   try {

@@ -67,7 +67,7 @@ export async function runBenchmark(onStep) {
   const memoryMs = await step('memory', () => repeatMedian(async () => runMemory(), 1500));
   const device = await step('device', async () => readDeviceInfo());
 
-  // TODO: 5차시 - score를 0~100 점수로 환산. 지금은 측정 원시값을 그대로 둔다
+  // TODO: 4차시 - score를 0~100 점수로 환산. 지금은 측정 원시값을 그대로 둔다
   return {
     compute: { ms: computeMs, score: computeMs },
     graphics: { fps, score: fps },

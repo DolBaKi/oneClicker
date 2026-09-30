@@ -81,8 +81,8 @@ async function handleStart() {
 function handleAnalyze() {
   const saved = saveResult({ device, benchmark: benchmarkResult, subjective: readSubjective() });
   if (!saved) return alert('결과를 저장하지 못했습니다. 브라우저의 저장 기능을 확인해 주세요');
-  // TODO: 5차시 - result.html(분석 결과 화면)을 만들고 여기서 이동시킬 예정
-  alert('측정 결과를 저장했습니다. 분석 화면은 5차시에 연결됩니다');
+  // TODO: 4차시 - result.html(분석 결과 화면)을 만들고 여기서 이동시킬 예정
+  alert('측정 결과를 저장했습니다. 분석 화면은 4차시에 연결됩니다');
 }
 
 const device = loadDeviceInfo();
