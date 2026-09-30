@@ -28,15 +28,24 @@ python3 -m http.server 5500
 ## 폴더 구조
 
 ```
-index.html            랜딩 화면
-pages/device.html      기기 정보 입력 (2차시 예정)
-css/                   tokens / base / layout
+index.html             랜딩 화면
+pages/device.html      기기 정보 입력 폼
+pages/collect.html     성능 측정 + 체감 평가
+css/                   tokens / base / layout / components / measure
 js/main.js             랜딩 화면 스크립트
-api/                   다음 차시 Supabase 연동용 (현재 비어있음)
+js/validate.js         입력값 검증 (화면을 건드리지 않음)
+js/device.js           기기 정보 화면 조작
+js/workloads.js        실제 부하 작업 (연산 / 메모리 / 그래픽)
+js/gl-scene.js         WebGL 셰이더·버퍼 준비
+js/benchmark.js        측정 반복·중앙값·시간 예산 관리
+js/collect.js          측정 화면 조작
+js/store.js            화면 간 값 전달 (sessionStorage)
+api/                   Supabase 연동용 (현재 비어있음)
 ```
 
 ## 진행 상황
 
 - 1차시: 로컬 환경 구성, 화면 2개(랜딩/기기 정보) 뼈대, GitHub 첫 커밋
-- 2차시(예정): 기기 정보 입력 폼 + 데이터 수집 로직
+- 3차시: 기기 정보 입력 폼과 검증, 성능 실측 벤치마크 + 체감 평가
+- 4차시(예정): 측정값을 0~100 점수로 환산하고 분석 결과 화면(result.html) 연결
 - 이후(예정): Supabase 연동

@@ -7,5 +7,3 @@ const startButton = document.getElementById('start-button');
 startButton.addEventListener('click', () => {
   window.location.href = 'pages/device.html';
 });
-
-// TODO: 2차시 - 기기 정보 수집(navigator, performance 등) 로직 연결 예정
