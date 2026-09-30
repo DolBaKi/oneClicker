@@ -1,7 +1,7 @@
 <!--
   device.html
-  - 기기 정보 입력 화면
-  - 지금은 제목과 안내 문구만 있는 빈 화면 (실제 입력 폼은 2차시에 구현)
+  - 기기 정보 입력 화면 (1단계)
+  - 모델명·구입 연월·하루 사용 시간·주 용도를 입력받아 다음 화면으로 넘긴다
 -->
 <!DOCTYPE html>
 <html lang="ko">
@@ -17,15 +17,74 @@
   <link rel="stylesheet" href="../css/tokens.css" />
   <link rel="stylesheet" href="../css/base.css" />
   <link rel="stylesheet" href="../css/layout.css" />
+  <link rel="stylesheet" href="../css/components.css" />
 </head>
 <body>
   <div class="screen">
-    <div class="card">
+    <div class="card card--form">
+      <!-- 진행 표시: 지금은 1단계 -->
+      <ul class="steps">
+        <li class="step is-active">1</li>
+        <li class="step">2</li>
+        <li class="step">3</li>
+      </ul>
+
       <h1>기기 정보 입력</h1>
-      <p>2차시에 구현 예정</p>
+
+      <!-- novalidate: 브라우저 기본 경고 대신 우리가 만든 에러 메시지를 쓰기 위해 끈다 -->
+      <form id="device-form" novalidate>
+        <!-- 모델명 -->
+        <div class="field" id="field-model">
+          <label class="field-label" for="model">모델명</label>
+          <input class="field-input" type="text" id="model" placeholder="예: 갤럭시북3 NT750" />
+          <span class="field-error" id="error-model"></span>
+        </div>
+
+        <!-- 구입 연월: 연도 목록은 device.js가 현재 연도 기준으로 자동으로 채운다 -->
+        <div class="field" id="field-purchase">
+          <span class="field-label">구입 연월</span>
+          <div class="field-row">
+            <select class="field-input" id="purchase-year">
+              <option value="">연도</option>
+            </select>
+            <select class="field-input" id="purchase-month">
+              <option value="">월</option>
+              <option value="1">1월</option><option value="2">2월</option><option value="3">3월</option>
+              <option value="4">4월</option><option value="5">5월</option><option value="6">6월</option>
+              <option value="7">7월</option><option value="8">8월</option><option value="9">9월</option>
+              <option value="10">10월</option><option value="11">11월</option><option value="12">12월</option>
+            </select>
+          </div>
+          <span class="field-error" id="error-purchase"></span>
+        </div>
+
+        <!-- 하루 평균 사용 시간 -->
+        <div class="field" id="field-hours">
+          <label class="field-label" for="daily-hours">하루 평균 사용 시간</label>
+          <div class="field-row">
+            <input class="field-input" type="number" id="daily-hours" min="1" max="24" step="1" placeholder="예: 6" />
+            <span class="field-unit">시간</span>
+          </div>
+          <span class="field-error" id="error-dailyHours"></span>
+        </div>
+
+        <!-- 주 사용 용도: 용도에 따라 부품이 닳는 속도가 달라서 점수 계산에 쓰인다 -->
+        <div class="field" id="field-usage">
+          <span class="field-label">주 사용 용도</span>
+          <div class="radio-group">
+            <label class="radio"><input type="radio" name="usage" id="usage-document" value="document" /> 문서·웹</label>
+            <label class="radio"><input type="radio" name="usage" value="develop" /> 개발</label>
+            <label class="radio"><input type="radio" name="usage" value="video" /> 영상편집</label>
+            <label class="radio"><input type="radio" name="usage" value="game" /> 게임</label>
+          </div>
+          <span class="field-error" id="error-usage"></span>
+        </div>
+
+        <button class="btn" type="submit">다음 단계로</button>
+      </form>
     </div>
   </div>
 
-  <!-- TODO: 2차시 - 기기 정보 입력 폼 및 수집 스크립트 추가 예정 -->
+  <script type="module" src="../js/device.js"></script>
 </body>
 </html>
