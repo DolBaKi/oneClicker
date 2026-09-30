@@ -4,6 +4,7 @@
 
 // 키 이름을 여기 한 곳에서만 관리한다 (여러 파일에 흩어지면 오타로 값을 못 찾는다)
 const STORAGE_KEY = 'oneclicker.device';
+const RESULT_KEY = 'oneclicker.result';
 
 /*
   기기 정보를 저장한다.
@@ -41,6 +42,48 @@ export function clearDeviceInfo() {
     return true;
   } catch (error) {
     console.error('기기 정보 삭제 실패:', error);
+    return false;
+  }
+}
+
+/*
+  기기 정보 + 실측 결과 + 체감 평가를 한 덩어리로 저장한다.
+  result: { device, benchmark, subjective: { heat, noise, boot, launch } }
+
+  체감 평가(subjective)를 실측(benchmark)에 섞지 않고 따로 보관하는 이유:
+  둘이 어긋날 때가 중요한 정보이기 때문이다. 실측은 멀쩡한데 체감이 나쁘면
+  하드웨어 노후가 아니라 소프트웨어 문제일 수 있다. 5차시 분석에서 이 둘을 비교해 쓴다.
+*/
+export function saveResult(result) {
+  try {
+    const record = { ...result, measuredAt: new Date().toISOString() };
+    sessionStorage.setItem(RESULT_KEY, JSON.stringify(record));
+    return true;
+  } catch (error) {
+    console.error('측정 결과 저장 실패:', error);
+    return false;
+  }
+}
+
+// 저장된 측정 결과를 불러온다. 없거나 깨졌으면 null
+export function loadResult() {
+  try {
+    const raw = sessionStorage.getItem(RESULT_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch (error) {
+    console.error('측정 결과 불러오기 실패:', error);
+    return null;
+  }
+}
+
+// 저장된 측정 결과를 지운다
+export function clearResult() {
+  try {
+    sessionStorage.removeItem(RESULT_KEY);
+    return true;
+  } catch (error) {
+    console.error('측정 결과 삭제 실패:', error);
     return false;
   }
 }

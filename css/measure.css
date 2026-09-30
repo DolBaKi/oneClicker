@@ -1,0 +1,71 @@
+/*
+  measure.css
+  - 성능 측정 화면에만 쓰는 조각들 (안내 문구, 진행 목록, 슬라이더, 버튼 줄)
+  - components.css의 .btn/.field/.field-error는 그대로 재사용하고 여기서는 새 것만 정의한다
+*/
+
+.hidden { display: none; }
+
+/* 측정 전 안내 문구 */
+.notice {
+  padding: var(--space-2);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background-color: var(--paper);
+  color: var(--ink-2);
+  font-size: 0.9rem;
+  text-align: left;
+}
+
+/* 항목별 진행 상태 목록 */
+.steplist { list-style: none; margin: var(--space-3) 0; }
+
+.steplist-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) 0;
+  color: var(--ink-3);
+  font-size: 0.95rem;
+}
+
+/* 앞에 붙는 표시. 대기는 빈 동그라미, 측정 중은 점, 완료는 체크 */
+.steplist-item::before { content: '○'; width: 1.2em; }
+.steplist-item.is-running { color: var(--ink); }
+.steplist-item.is-running::before { content: '●'; color: var(--amber); }
+.steplist-item.is-done { color: var(--ink-2); }
+.steplist-item.is-done::before { content: '✓'; color: var(--teal); }
+
+/* 측정 실패 안내 */
+.measure-error {
+  margin-bottom: var(--space-2);
+  color: var(--red);
+  font-size: 0.9rem;
+}
+
+/* 체감 평가 슬라이더 한 줄 */
+.slider-row {
+  display: grid;
+  grid-template-columns: 5.5em 1fr 4em;
+  align-items: center;
+  gap: var(--space-1);
+  margin-bottom: var(--space-2);
+}
+
+.slider-row input[type='range'] {
+  width: 100%;
+  accent-color: var(--teal);
+}
+
+.slider-value {
+  color: var(--ink-2);
+  font-size: 0.9rem;
+  text-align: right;
+}
+
+/* 하단 [이전] [분석하기] 가로 배치 */
+.actions {
+  display: flex;
+  gap: var(--space-1);
+  margin-top: var(--space-3);
+}

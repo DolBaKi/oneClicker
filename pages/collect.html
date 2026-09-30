@@ -1,14 +1,14 @@
 <!--
   collect.html
-  - 데이터 수집 화면 (2단계)
-  - 이전 화면의 기기 정보를 요약해서 보여주고, 실제 입력칸은 4차시에 채운다
+  - 성능 측정 화면 (2단계)
+  - 브라우저가 직접 잴 수 있는 성능만 실측하고, 그 뒤에 체감 평가를 받는다
 -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>데이터 수집</title>
+  <title>성능 측정</title>
 
   <link rel="stylesheet" as="style" crossorigin
     href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
@@ -17,6 +17,7 @@
   <link rel="stylesheet" href="../css/base.css" />
   <link rel="stylesheet" href="../css/layout.css" />
   <link rel="stylesheet" href="../css/components.css" />
+  <link rel="stylesheet" href="../css/measure.css" />
 </head>
 <body>
   <div class="screen">
@@ -28,21 +29,52 @@
         <li class="step">3</li>
       </ul>
 
-      <h1>데이터 수집</h1>
+      <h1>성능 측정</h1>
 
       <!-- 이전 화면에서 넘어온 기기 정보 요약. 내용은 collect.js가 채운다 -->
       <p id="device-summary"></p>
 
-      <!-- 좌우 2단: 제목만 두고 입력칸은 다음 차시에 -->
-      <div class="two-col">
-        <section>
-          <h2 class="field-label">시스템 수치</h2>
-          <!-- TODO: 4차시 - 배터리 사이클, 저장장치 사용량 등 입력칸 추가 -->
-        </section>
-        <section>
-          <h2 class="field-label">체감 평가</h2>
-          <!-- TODO: 4차시 - 발열, 소음, 속도 체감 입력칸 추가 -->
-        </section>
+      <p class="notice">
+        약 10초간 노트북 성능을 측정합니다.<br />
+        정확한 측정을 위해 다른 프로그램을 닫고 진행해 주세요.
+      </p>
+
+      <!-- 측정 실패 시에만 보인다 -->
+      <p class="measure-error hidden" id="measure-error"></p>
+
+      <button class="btn" id="start-measure" type="button">성능 측정 시작</button>
+
+      <!-- 항목별 진행 상태. 목록은 collect.js가 그린다 -->
+      <ul class="steplist" id="steplist"></ul>
+
+      <!-- 측정이 끝나야 나타나는 체감 평가 -->
+      <div class="hidden" id="subjective">
+        <h2 class="field-label">체감 평가</h2>
+        <div class="slider-row">
+          <label for="heat">발열</label>
+          <input type="range" id="heat" min="1" max="5" step="1" value="3" />
+          <span class="slider-value" id="heat-value">3단계</span>
+        </div>
+        <div class="slider-row">
+          <label for="noise">소음</label>
+          <input type="range" id="noise" min="1" max="5" step="1" value="3" />
+          <span class="slider-value" id="noise-value">3단계</span>
+        </div>
+        <div class="slider-row">
+          <label for="boot">부팅 속도</label>
+          <input type="range" id="boot" min="1" max="5" step="1" value="3" />
+          <span class="slider-value" id="boot-value">3단계</span>
+        </div>
+        <div class="slider-row">
+          <label for="launch">앱 실행</label>
+          <input type="range" id="launch" min="1" max="5" step="1" value="3" />
+          <span class="slider-value" id="launch-value">3단계</span>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-ghost" id="back-button" type="button">이전</button>
+        <button class="btn" id="analyze-button" type="button" disabled>분석하기</button>
       </div>
     </div>
   </div>
