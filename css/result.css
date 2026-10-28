@@ -46,6 +46,33 @@
 .score-bar-fill.is-warn { background-color: var(--amber); }
 .score-bar-fill.is-bad { background-color: var(--red); }
 
+#total-grade { display: block; color: var(--ink-2); font-weight: 600; }
+.lifespan { margin-bottom: var(--space-3); text-align: center; color: var(--ink-2); }
+
+/* 지속 부하 그래프 */
+.chart {
+  width: 100%;
+  height: auto;
+  margin-top: var(--space-1);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background-color: var(--paper);
+}
+
+.chart-line { fill: none; stroke: var(--teal); stroke-width: 2; }
+
+/* 최고 성능 기준선. 점선으로 그어 "여기까지 낼 수 있었다"를 보여준다 */
+.chart-peak { stroke: var(--ink-3); stroke-width: 1; stroke-dasharray: 4 4; }
+
+/* 성능이 꺾인 시점 */
+.chart-throttle { stroke: var(--amber); stroke-width: 1.5; stroke-dasharray: 2 3; }
+
+.chart-tick { fill: var(--ink-3); font-size: 11px; }
+.chart-tick-end { text-anchor: end; }
+
+.stress-note { margin-top: var(--space-1); color: var(--ink); font-size: 0.95rem; }
+.chart-help { margin-bottom: var(--space-3); color: var(--ink-3); font-size: 0.85rem; }
+
 /* 측정 원시값 목록 (접어둔 상태로 보여준다) */
 .raw-values {
   margin-top: var(--space-3);

@@ -95,3 +95,6 @@
   gap: var(--space-1);
   margin-top: var(--space-3);
 }
+
+/* 주의를 끌어야 하는 안내 (배터리 사용 중, 측정 항목 부족 등) */
+.notice-warn { border-color: var(--amber); color: var(--ink); }

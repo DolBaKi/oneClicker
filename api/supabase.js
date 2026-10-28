@@ -11,22 +11,36 @@ const TABLE = 'measurements';
   키 이름은 schema.sql의 컬럼 이름과 하나도 틀리지 않게 맞춰야 한다.
   (JS는 purchaseYear처럼 쓰지만 데이터베이스는 purchase_year처럼 쓰는 관례라 여기서 바꿔준다)
 */
-export function toRecord(device, benchmark, scores) {
+export function toRecord({ device, benchmark, stress, parallel, hardware, scores, interrupted }) {
   return {
     model: device.model,
     purchase_year: Number(device.purchaseYear),
     purchase_month: Number(device.purchaseMonth),
     daily_hours: device.dailyHours,
     usage_type: device.usage,
-    compute_ms: benchmark.compute.ms,
-    graphics_fps: benchmark.graphics.fps,
-    memory_ms: benchmark.memory.ms,
-    cores: benchmark.device.cores,
-    memory_gb: benchmark.device.memoryGB,
-    compute_score: scores.compute,
+
+    compute_ms: benchmark?.compute?.ms ?? null,
+    graphics_fps: benchmark?.graphics?.fps ?? null,
+    memory_ms: benchmark?.memory?.ms ?? null,
+    cores: hardware?.cpu?.cores ?? null,
+    memory_gb: hardware?.ram?.value ?? null,
+
+    // 시계열 전체는 보내지 않는다. 행이 너무 커지고, 통계에는 요약값이면 충분하다
+    peak_throughput: stress?.peak ?? null,
+    sustained_throughput: stress?.sustained ?? null,
+    retention: stress?.retention ?? null,
+    p1_low: stress?.p1Low ?? null,
+    cv: stress?.cv ?? null,
+    throttle_at_ms: stress?.throttleAt ?? null,
+    parallel_speedup: parallel?.speedup ?? null,
+    parallel_efficiency: parallel?.efficiency ?? null,
+
+    compute_score: scores.computeSingle,
     graphics_score: scores.graphics,
     memory_score: scores.memory,
+    stability_score: scores.stability,
     total_score: scores.total,
+    interrupted: interrupted === true,
   };
 }
 

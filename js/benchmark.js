@@ -11,6 +11,9 @@
 */
 
 import { runCompute, runMemory, runGraphics } from './workloads.js';
+import { runGpuStress } from './gpu-stress.js';
+import { runCpuParallel } from './cpu-parallel.js';
+import { detectHardware } from './hardware.js';
 
 const REPEAT = 3; // 반복 횟수. 중앙값을 쓰려고 홀수로 둔다
 
@@ -55,9 +58,12 @@ async function repeatMedian(runOnce, budgetMs) {
   return median(values);
 }
 
-// 네 가지를 순서대로 측정한다.
-// onStep(항목, 상태)으로 진행 상황만 알려주고, 그걸로 무엇을 그릴지는 부르는 쪽이 정한다
-export async function runBenchmark(onStep) {
+/*
+  측정을 순서대로 돌린다.
+  onStep(항목, 상태, 걸린시간)으로 진행만 알리고, 무엇을 그릴지는 부르는 쪽이 정한다.
+  signal로 중단 요청을 받아 GPU 스트레스 도중에도 멈출 수 있게 한다.
+*/
+export async function runBenchmark(onStep, { signal, onStressProgress } = {}) {
   const step = async (key, run) => {
     onStep(key, 'running');
     await sleep(50); // "측정 중"이 화면에 먼저 그려지도록 한 박자 쉰다
@@ -70,15 +76,21 @@ export async function runBenchmark(onStep) {
   };
 
   const computeMs = await step('compute', () => repeatMedian(async () => runCompute(), 2500));
+  const parallel = await step('parallel', runCpuParallel);
   const fps = await step('graphics', () => repeatMedian(runGraphics, 2500));
   const memoryMs = await step('memory', () => repeatMedian(async () => runMemory(), 1500));
-  const device = await step('device', async () => readDeviceInfo());
+  const stress = await step('stress', () => runGpuStress({ signal, onProgress: onStressProgress }));
+  const hardware = await step('hardware', detectHardware);
 
-  // TODO: 4차시 - score를 0~100 점수로 환산. 지금은 측정 원시값을 그대로 둔다
   return {
-    compute: { ms: computeMs, score: computeMs },
-    graphics: { fps, score: fps },
-    memory: { ms: memoryMs, score: memoryMs },
-    device,
+    benchmark: {
+      compute: { ms: computeMs },
+      graphics: { fps },
+      memory: { ms: memoryMs },
+      device: readDeviceInfo(),
+    },
+    parallel,
+    stress,
+    hardware,
   };
 }
