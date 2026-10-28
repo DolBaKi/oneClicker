@@ -47,34 +47,10 @@
       <!-- 항목별 진행 상태. 목록은 collect.js가 그린다 -->
       <ul class="steplist" id="steplist"></ul>
 
-      <!-- 측정이 끝나야 나타나는 체감 평가 -->
-      <div class="hidden" id="subjective">
-        <h2 class="field-label">체감 평가</h2>
-        <div class="slider-row">
-          <label for="heat">발열</label>
-          <input type="range" id="heat" min="1" max="5" step="1" value="3" />
-          <span class="slider-value" id="heat-value">3단계</span>
-        </div>
-        <div class="slider-row">
-          <label for="noise">소음</label>
-          <input type="range" id="noise" min="1" max="5" step="1" value="3" />
-          <span class="slider-value" id="noise-value">3단계</span>
-        </div>
-        <div class="slider-row">
-          <label for="boot">부팅 속도</label>
-          <input type="range" id="boot" min="1" max="5" step="1" value="3" />
-          <span class="slider-value" id="boot-value">3단계</span>
-        </div>
-        <div class="slider-row">
-          <label for="launch">앱 실행</label>
-          <input type="range" id="launch" min="1" max="5" step="1" value="3" />
-          <span class="slider-value" id="launch-value">3단계</span>
-        </div>
-      </div>
-
       <div class="actions">
         <button class="btn btn-ghost" id="back-button" type="button">이전</button>
-        <button class="btn" id="analyze-button" type="button" disabled>분석하기</button>
+        <!-- 서버 저장에 실패했을 때만 나타난다. 평소에는 측정이 끝나면 저절로 넘어간다 -->
+        <button class="btn hidden" id="result-button" type="button">결과 보기</button>
       </div>
     </div>
   </div>

@@ -43,27 +43,7 @@
   font-size: 0.9rem;
 }
 
-/* 체감 평가 슬라이더 한 줄 */
-.slider-row {
-  display: grid;
-  grid-template-columns: 5.5em 1fr 4em;
-  align-items: center;
-  gap: var(--space-1);
-  margin-bottom: var(--space-2);
-}
-
-.slider-row input[type='range'] {
-  width: 100%;
-  accent-color: var(--teal);
-}
-
-.slider-value {
-  color: var(--ink-2);
-  font-size: 0.9rem;
-  text-align: right;
-}
-
-/* 하단 [이전] [분석하기] 가로 배치 */
+/* 하단 버튼 가로 배치 */
 .actions {
   display: flex;
   gap: var(--space-1);

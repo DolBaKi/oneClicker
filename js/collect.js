@@ -1,9 +1,11 @@
 // collect.js
-// - 성능 측정 화면의 화면 조작 담당 (진행 표시, 슬라이더, 버튼 상태)
-// - 측정은 benchmark.js에 맡긴다: 화면 코드와 측정 코드를 섞지 않아야 한쪽만 고칠 수 있다
+// - 성능 측정 화면의 화면 조작 담당 (진행 표시, 버튼 상태, 다음 화면 이동)
+// - 측정은 benchmark.js, 환산은 scoring.js, 서버 저장은 supabase.js에 맡긴다
 
 import { loadDeviceInfo, saveResult } from './store.js';
 import { runBenchmark } from './benchmark.js';
+import { scoreAll } from './scoring.js';
+import { toRecord, insertMeasurement } from '../api/supabase.js';
 
 // 저장된 값은 'document' 같은 영문 코드라서, 화면에 보여줄 한글 이름을 따로 둔다
 const USAGE_LABELS = { document: '문서·웹', develop: '개발', video: '영상편집', game: '게임' };
@@ -15,12 +17,10 @@ const STEPS = [
   { key: 'memory', label: '메모리 응답' },
   { key: 'device', label: '기기 사양 확인' },
 ];
-const SLIDERS = ['heat', 'noise', 'boot', 'launch'];
 
 const startButton = document.getElementById('start-measure');
-const analyzeButton = document.getElementById('analyze-button');
+const resultButton = document.getElementById('result-button');
 const errorBox = document.getElementById('measure-error');
-let benchmarkResult = null;
 
 // 기기 정보를 한 줄 요약으로 그린다
 function renderSummary(data) {
@@ -43,46 +43,44 @@ function setStepState(key, state) {
   item.textContent = state === 'done' ? `${label} 완료` : `${label} 측정 중...`;
 }
 
-// 슬라이더를 움직이면 옆 숫자를 같이 바꾼다
-function bindSliders() {
-  SLIDERS.forEach((name) => document.getElementById(name).addEventListener('input', (event) => {
-    document.getElementById(`${name}-value`).textContent = `${event.target.value}단계`;
-  }));
+function showError(message) {
+  errorBox.textContent = message;
+  errorBox.classList.remove('hidden');
 }
 
-// 슬라이더 4개 값을 { heat, noise, boot, launch } 형태로 모은다
-function readSubjective() {
-  return Object.fromEntries(
-    SLIDERS.map((name) => [name, Number(document.getElementById(name).value)]));
-}
-
-// [성능 측정 시작]: 측정 중에는 버튼을 잠그고, 끝나면 체감 평가를 연다
+// [성능 측정 시작]: 측정 → 점수 환산 → 저장 → 결과 화면
 async function handleStart() {
   errorBox.classList.add('hidden');
+  resultButton.classList.add('hidden');
   startButton.disabled = true;
   startButton.textContent = '측정 중...';
   renderSteps(); // 다시 측정할 때를 대비해 진행 목록을 대기 상태로 되돌린다
+
+  let benchmark;
   try {
-    benchmarkResult = await runBenchmark(setStepState);
-    document.getElementById('subjective').classList.remove('hidden');
-    analyzeButton.disabled = false;
-    startButton.textContent = '다시 측정하기';
+    benchmark = await runBenchmark(setStepState);
   } catch (error) {
     console.error('성능 측정 실패:', error);
-    errorBox.textContent = '측정에 실패했습니다. 다른 프로그램을 닫고 다시 시도해 주세요';
-    errorBox.classList.remove('hidden');
-  } finally {
-    startButton.disabled = false; // 실패해도 다시 시도할 수 있어야 한다
+    showError('측정에 실패했습니다. 다른 프로그램을 닫고 다시 시도해 주세요');
+    startButton.disabled = false;
+    startButton.textContent = '다시 측정하기';
+    return;
+  }
+
+  const scores = scoreAll(benchmark);
+  saveResult({ device, benchmark, scores }); // 먼저 브라우저에 저장해 결과 화면을 볼 수 있게 한다
+
+  try {
+    await insertMeasurement(toRecord(device, benchmark, scores));
+    window.location.href = 'result.html';
+  } catch (error) {
+    // 서버에 못 보내도 측정값 자체는 살아있으므로 결과는 볼 수 있게 해준다
+    console.error(error);
+    showError('측정은 끝났지만 서버에 저장하지 못했습니다. 인터넷 연결을 확인해 주세요');
+    resultButton.classList.remove('hidden');
+    startButton.disabled = false;
     startButton.textContent = '다시 측정하기';
   }
-}
-
-// [분석하기]: 기기 정보 + 실측 + 체감 평가를 한 덩어리로 저장한다
-function handleAnalyze() {
-  const saved = saveResult({ device, benchmark: benchmarkResult, subjective: readSubjective() });
-  if (!saved) return alert('결과를 저장하지 못했습니다. 브라우저의 저장 기능을 확인해 주세요');
-  // TODO: 4차시 - result.html(분석 결과 화면)을 만들고 여기서 이동시킬 예정
-  alert('측정 결과를 저장했습니다. 분석 화면은 4차시에 연결됩니다');
 }
 
 const device = loadDeviceInfo();
@@ -92,9 +90,8 @@ if (!device) {
 } else {
   renderSummary(device);
   renderSteps();
-  bindSliders();
   startButton.addEventListener('click', handleStart);
-  analyzeButton.addEventListener('click', handleAnalyze);
+  resultButton.addEventListener('click', () => window.location.assign('result.html'));
   document.getElementById('back-button')
     .addEventListener('click', () => window.location.assign('device.html'));
 }

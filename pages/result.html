@@ -1,0 +1,63 @@
+<!--
+  result.html
+  - 분석 결과 화면 (3단계)
+  - 방금 측정한 값을 0~100 점수로 보여준다. 교체 시기 예측은 4차시 예정
+-->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>분석 결과</title>
+
+  <link rel="stylesheet" as="style" crossorigin
+    href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
+
+  <link rel="stylesheet" href="../css/tokens.css" />
+  <link rel="stylesheet" href="../css/base.css" />
+  <link rel="stylesheet" href="../css/layout.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <link rel="stylesheet" href="../css/measure.css" />
+  <link rel="stylesheet" href="../css/result.css" />
+</head>
+<body>
+  <div class="screen">
+    <div class="card card--wide">
+      <!-- 진행 표시: 마지막 3단계 -->
+      <ul class="steps">
+        <li class="step">1</li>
+        <li class="step">2</li>
+        <li class="step is-active">3</li>
+      </ul>
+
+      <h1>분석 결과</h1>
+      <p id="device-summary"></p>
+
+      <!-- 총점. 내용은 result.js가 채운다 -->
+      <div class="total-score">
+        <strong id="total-number">-</strong>
+        <span>100점 만점 종합 성능 점수</span>
+      </div>
+
+      <!-- 항목별 점수 막대 -->
+      <div id="score-list"></div>
+
+      <!-- 실제로 측정된 숫자 -->
+      <div class="raw-values">
+        <dl id="raw-list"></dl>
+        <p style="margin-top: var(--space-2)">
+          이 수치는 기기와 실행 환경에 따라 달라집니다. 절대 평가가 아니라 비교용입니다.
+        </p>
+      </div>
+
+      <!-- TODO: 4차시 - 구입 연월·사용 시간·용도를 함께 써서 교체 시기(개월 수)를 예측해 여기에 표시 -->
+
+      <div class="actions">
+        <button class="btn btn-ghost" id="restart-button" type="button">처음부터 다시</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="../js/result.js"></script>
+</body>
+</html>
