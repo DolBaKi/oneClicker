@@ -1,0 +1,60 @@
+/*
+  result.css
+  - 분석 결과 화면 전용 (총점 표시, 항목별 점수 막대, 원시값 목록)
+  - 색상은 tokens.css 변수만 쓴다
+*/
+
+/* 총점 */
+.total-score {
+  text-align: center;
+  margin-bottom: var(--space-4);
+}
+
+.total-score strong {
+  display: block;
+  font-size: 3rem;
+  line-height: 1.2;
+  color: var(--ink);
+}
+
+.total-score span { color: var(--ink-3); font-size: 0.9rem; }
+
+/* 항목별 점수 한 줄 */
+.score-row {
+  display: grid;
+  grid-template-columns: 6em 1fr 3em;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.score-label { color: var(--ink-2); font-size: 0.95rem; }
+.score-number { color: var(--ink); font-weight: 600; text-align: right; }
+
+/* 점수 막대. 길이는 result.js가 style.width로 채운다 */
+.score-bar {
+  height: 10px;
+  border-radius: 5px;
+  background-color: var(--paper);
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+
+.score-bar-fill { height: 100%; background-color: var(--teal); }
+
+/* 점수대에 따라 색을 바꿔 한눈에 보이게 한다 */
+.score-bar-fill.is-warn { background-color: var(--amber); }
+.score-bar-fill.is-bad { background-color: var(--red); }
+
+/* 측정 원시값 목록 (접어둔 상태로 보여준다) */
+.raw-values {
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--line);
+  color: var(--ink-3);
+  font-size: 0.85rem;
+}
+
+.raw-values dl { display: grid; grid-template-columns: auto 1fr; gap: 4px var(--space-2); }
+.raw-values dt { color: var(--ink-2); }
+.raw-values dd { text-align: right; }

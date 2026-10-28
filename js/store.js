@@ -47,12 +47,11 @@ export function clearDeviceInfo() {
 }
 
 /*
-  기기 정보 + 실측 결과 + 체감 평가를 한 덩어리로 저장한다.
-  result: { device, benchmark, subjective: { heat, noise, boot, launch } }
+  기기 정보 + 실측 원시값 + 환산 점수를 한 덩어리로 저장한다.
+  result: { device, benchmark, scores }
 
-  체감 평가(subjective)를 실측(benchmark)에 섞지 않고 따로 보관하는 이유:
-  둘이 어긋날 때가 중요한 정보이기 때문이다. 실측은 멀쩡한데 체감이 나쁘면
-  하드웨어 노후가 아니라 소프트웨어 문제일 수 있다. 4차시 분석에서 이 둘을 비교해 쓴다.
+  원시값(benchmark)과 점수(scores)를 함께 들고 있는 이유:
+  점수 환산 기준은 앞으로 바뀔 수 있는데, 원시값을 버리면 다시 계산할 수가 없다.
 */
 export function saveResult(result) {
   try {
