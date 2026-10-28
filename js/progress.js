@@ -4,7 +4,7 @@
 
 /*
   진행 목록에 표시할 항목. benchmark.js가 알려주는 key와 똑같아야 한다.
-  예상 시간(seconds)을 미리 보여주는 이유: 전체가 15초 안팎이라 아무 안내 없이 기다리면
+  예상 시간(seconds)을 미리 보여주는 이유: 전체가 25초 안팎이라 아무 안내 없이 기다리면
   멈춘 줄 알고 창을 닫는다. 어느 단계가 오래 걸리는지 알면 기다릴 수 있다.
 */
 export const STEPS = [
@@ -12,7 +12,7 @@ export const STEPS = [
   { key: 'parallel', label: '연산 속도 (병렬)', seconds: 2 },
   { key: 'graphics', label: '그래픽 최고 속도', seconds: 2 },
   { key: 'memory', label: '메모리 응답', seconds: 1 },
-  { key: 'stress', label: '그래픽 지속 부하', seconds: 6 },
+  { key: 'stress', label: '그래픽 지속 부하', seconds: 15 },
   { key: 'hardware', label: '기기 사양 확인', seconds: 1 },
 ];
 

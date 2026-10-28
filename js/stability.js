@@ -24,18 +24,19 @@ export function weightedAverage(parts) {
   retention에 절반을 주는 이유: 이것이 "끝까지 유지된 성능"을 직접 재는 값이다.
   cv와 throttleAt은 OS가 잠깐 딴짓만 해도 흔들리는 보조 지표라 비중을 낮췄다.
 
-  기준값:
-  - retention 0.95 이상이면 만점, 0.60 이하면 0점
+  기준값 (15초 부하 기준으로 다시 잡았다):
+  - retention 0.97 이상이면 만점, 0.65 이하면 0점
+    예전엔 0.95만 넘어도 만점이었는데, 부하가 약해 거의 모든 기기가 0.97을 넘겨
+    변별이 되지 않았다. 15초를 버티는 기기와 못 버티는 기기를 가르도록 좁혔다
   - cv 0.05 이하면 만점, 0.30 이상이면 0점 (출렁임이 클수록 감점)
-  - throttleAt 없으면(끝까지 버팀) 만점, 늦게 꺾일수록 높고 1.5초 안에 꺾이면 0점
-    측정이 6초라서 5초 이후에 꺾인 것은 사실상 버틴 것으로 본다
+  - throttleAt 없으면(15초를 끝까지 버팀) 만점, 늦게 꺾일수록 높고 2초 안에 꺾이면 0점
 */
 export function stabilityScore(stress) {
   if (!stress?.supported) return null;
 
-  const retention = stress.retention === null ? null : lerp(stress.retention, 0.60, 0.95);
+  const retention = stress.retention === null ? null : lerp(stress.retention, 0.65, 0.97);
   const cv = stress.cv === null ? null : lerp(stress.cv, 0.30, 0.05);
-  const throttle = stress.throttleAt === null ? 100 : lerp(stress.throttleAt, 1500, 5000);
+  const throttle = stress.throttleAt === null ? 100 : lerp(stress.throttleAt, 2000, 12000);
 
   return weightedAverage([
     { value: retention, weight: 0.5 },
@@ -51,19 +52,20 @@ export function stabilityScore(stress) {
   모델별 성능표가 있어야 하는데 그런 데이터가 없고, 사파리처럼 이름을 가리는
   브라우저도 많아서 근거 없는 추측이 된다.
 
-  RAM의 한계를 반드시 알고 봐야 한다:
-  navigator.deviceMemory는 최댓값이 8이다. 32GB 기기도 8을 돌려준다.
-  그래서 "메모리가 넉넉해서 좋다"는 판정은 원천적으로 불가능하고,
-  4GB 미만일 때 감점하는 용도로만 쓴다 (비중도 작게 뒀다).
+  RAM은 점수에서 뺐다.
+  navigator.deviceMemory는 최댓값이 8이라 32GB 기기도 8을 돌려준다.
+  4GB 이상이면 전부 같은 값이 나오니, 요즘 노트북은 예외 없이 만점을 받는다.
+  모두가 받는 점수는 변별에 쓸모가 없고 총점만 올려놓는다.
+  그래서 "4GB 미만이면 감점"만 남기고, 그 위는 아예 채점하지 않는다(null = 가중치에서 빠짐).
 */
 export function specScore(parallel, hardware) {
   // 8코어인데 speedup이 2배(효율 0.25)면 사양을 못 쓰고 있다는 뜻이다
   const parallelPart = parallel?.supported && parallel.efficiency !== null
     ? lerp(parallel.efficiency, 0.25, 0.80) : null;
 
+  // 4GB 이상은 구분할 방법이 없으므로 점수를 매기지 않는다
   const ram = hardware?.ram;
-  const ramPart = ram?.supported
-    ? (ram.value >= 4 ? 100 : lerp(ram.value, 1, 4)) : null;
+  const ramPart = ram?.supported && ram.value < 4 ? lerp(ram.value, 1, 4) : null;
 
   return weightedAverage([
     { value: parallelPart, weight: 0.75 },
