@@ -14,6 +14,10 @@ import { runCompute, runMemory, runGraphics } from './workloads.js';
 
 const REPEAT = 3; // 반복 횟수. 중앙값을 쓰려고 홀수로 둔다
 
+// 한 단계를 화면에 최소한 이만큼은 보여준다.
+// 측정이 너무 빨리 끝나면 진행 표시가 순식간에 지나가 아무 일도 안 한 것처럼 보이기 때문이다.
+const MIN_STEP_MS = 600;
+
 // await로 잠깐 쉬어 브라우저가 화면을 갱신할 틈을 준다 (안 쉬면 화면이 멈춘 것처럼 보인다)
 export const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -57,8 +61,11 @@ export async function runBenchmark(onStep) {
   const step = async (key, run) => {
     onStep(key, 'running');
     await sleep(50); // "측정 중"이 화면에 먼저 그려지도록 한 박자 쉰다
+    const startedAt = performance.now();
     const value = await run();
-    onStep(key, 'done');
+    const elapsed = Math.round(performance.now() - startedAt);
+    if (elapsed < MIN_STEP_MS) await sleep(MIN_STEP_MS - elapsed); // 눈으로 따라갈 시간을 준다
+    onStep(key, 'done', elapsed);
     return value;
   };
 

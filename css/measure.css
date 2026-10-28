@@ -17,8 +17,28 @@
   text-align: left;
 }
 
+/* 전체 진행률 막대 */
+.progress {
+  height: 8px;
+  margin-top: var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background-color: var(--paper);
+  overflow: hidden;
+}
+
+/* 너비는 collect.js가 style.width로 채운다 */
+.progress-fill {
+  width: 0;
+  height: 100%;
+  background-color: var(--teal);
+  transition: width 0.3s ease;
+}
+
+.progress-text { margin-top: var(--space-1); color: var(--ink-2); font-size: 0.9rem; text-align: center; }
+
 /* 항목별 진행 상태 목록 */
-.steplist { list-style: none; margin: var(--space-3) 0; }
+.steplist { list-style: none; margin: var(--space-2) 0 0; }
 
 .steplist-item {
   display: flex;
@@ -29,12 +49,38 @@
   font-size: 0.95rem;
 }
 
-/* 앞에 붙는 표시. 대기는 빈 동그라미, 측정 중은 점, 완료는 체크 */
-.steplist-item::before { content: '○'; width: 1.2em; }
-.steplist-item.is-running { color: var(--ink); }
-.steplist-item.is-running::before { content: '●'; color: var(--amber); }
-.steplist-item.is-done { color: var(--ink-2); }
-.steplist-item.is-done::before { content: '✓'; color: var(--teal); }
+.steplist-label { flex: 1; }
+.steplist-time { color: var(--ink-3); font-size: 0.85rem; }
+
+/* 앞에 붙는 표시 자리 */
+.steplist-mark {
+  width: 1.2em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* 대기 중: 빈 동그라미 */
+.steplist-mark::before { content: '○'; color: var(--ink-3); }
+
+/* 측정 중: 도는 원 (멈춰있지 않다는 걸 보여준다) */
+.is-running { color: var(--ink); }
+.is-running .steplist-mark::before {
+  content: '';
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--line);
+  border-top-color: var(--amber);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* 완료: 체크 */
+.is-done { color: var(--ink-2); }
+.is-done .steplist-mark::before { content: '✓'; color: var(--teal); }
 
 /* 측정 실패 안내 */
 .measure-error {

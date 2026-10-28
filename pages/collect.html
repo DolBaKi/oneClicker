@@ -35,7 +35,7 @@
       <p id="device-summary"></p>
 
       <p class="notice">
-        약 10초간 노트북 성능을 측정합니다.<br />
+        약 5초간 노트북 성능을 측정합니다.<br />
         정확한 측정을 위해 다른 프로그램을 닫고 진행해 주세요.
       </p>
 
@@ -44,8 +44,12 @@
 
       <button class="btn" id="start-measure" type="button">성능 측정 시작</button>
 
-      <!-- 항목별 진행 상태. 목록은 collect.js가 그린다 -->
-      <ul class="steplist" id="steplist"></ul>
+      <!-- 측정 중에만 보이는 진행 표시. 내용은 collect.js가 채운다 -->
+      <div class="hidden" id="progress-area">
+        <div class="progress"><div class="progress-fill" id="progress-fill"></div></div>
+        <p class="progress-text" id="progress-text">측정 준비 중...</p>
+        <ul class="steplist" id="steplist"></ul>
+      </div>
 
       <div class="actions">
         <button class="btn btn-ghost" id="back-button" type="button">이전</button>

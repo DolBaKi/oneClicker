@@ -1,51 +1,27 @@
 // collect.js
-// - 성능 측정 화면의 화면 조작 담당 (진행 표시, 버튼 상태, 다음 화면 이동)
-// - 측정은 benchmark.js, 환산은 scoring.js, 서버 저장은 supabase.js에 맡긴다
+// - 성능 측정 화면의 흐름 제어 (측정 → 점수 환산 → 저장 → 결과 화면)
+// - 진행 표시는 progress.js, 측정은 benchmark.js, 환산은 scoring.js, 저장은 supabase.js가 맡는다
 
 import { loadDeviceInfo, saveResult } from './store.js';
 import { runBenchmark } from './benchmark.js';
 import { scoreAll } from './scoring.js';
+import { renderSummary } from './summary.js';
+import { startProgress, setStepState, setProgressText } from './progress.js';
 import { toRecord, insertMeasurement } from '../api/supabase.js';
-
-// 저장된 값은 'document' 같은 영문 코드라서, 화면에 보여줄 한글 이름을 따로 둔다
-const USAGE_LABELS = { document: '문서·웹', develop: '개발', video: '영상편집', game: '게임' };
-
-// 진행 목록에 표시할 항목. benchmark.js가 알려주는 key와 이름이 같아야 한다
-const STEPS = [
-  { key: 'compute', label: '연산 속도' },
-  { key: 'graphics', label: '그래픽 성능' },
-  { key: 'memory', label: '메모리 응답' },
-  { key: 'device', label: '기기 사양 확인' },
-];
 
 const startButton = document.getElementById('start-measure');
 const resultButton = document.getElementById('result-button');
 const errorBox = document.getElementById('measure-error');
 
-// 기기 정보를 한 줄 요약으로 그린다
-function renderSummary(data) {
-  document.getElementById('device-summary').textContent = `${data.model} · ${data.purchaseYear}년 `
-    + `${data.purchaseMonth}월 구입 · 하루 ${data.dailyHours}시간 · ${USAGE_LABELS[data.usage] || data.usage}`;
-}
-
-// 진행 목록을 처음 그린다 (전부 대기 상태)
-function renderSteps() {
-  document.getElementById('steplist').innerHTML = STEPS.map(
-    (step) => `<li class="steplist-item" id="step-${step.key}">${step.label}</li>`).join('');
-}
-
-// 한 항목의 상태를 바꾼다. state: 'running' | 'done'
-function setStepState(key, state) {
-  const item = document.getElementById(`step-${key}`);
-  if (!item) return;
-  const { label } = STEPS.find((step) => step.key === key);
-  item.className = `steplist-item ${state === 'done' ? 'is-done' : 'is-running'}`;
-  item.textContent = state === 'done' ? `${label} 완료` : `${label} 측정 중...`;
-}
-
 function showError(message) {
   errorBox.textContent = message;
   errorBox.classList.remove('hidden');
+}
+
+// 버튼을 다시 누를 수 있는 상태로 되돌린다
+function resetButton() {
+  startButton.disabled = false;
+  startButton.textContent = '다시 측정하기';
 }
 
 // [성능 측정 시작]: 측정 → 점수 환산 → 저장 → 결과 화면
@@ -54,7 +30,7 @@ async function handleStart() {
   resultButton.classList.add('hidden');
   startButton.disabled = true;
   startButton.textContent = '측정 중...';
-  renderSteps(); // 다시 측정할 때를 대비해 진행 목록을 대기 상태로 되돌린다
+  startProgress();
 
   let benchmark;
   try {
@@ -62,8 +38,8 @@ async function handleStart() {
   } catch (error) {
     console.error('성능 측정 실패:', error);
     showError('측정에 실패했습니다. 다른 프로그램을 닫고 다시 시도해 주세요');
-    startButton.disabled = false;
-    startButton.textContent = '다시 측정하기';
+    setProgressText('측정이 중단되었습니다');
+    resetButton();
     return;
   }
 
@@ -77,9 +53,9 @@ async function handleStart() {
     // 서버에 못 보내도 측정값 자체는 살아있으므로 결과는 볼 수 있게 해준다
     console.error(error);
     showError('측정은 끝났지만 서버에 저장하지 못했습니다. 인터넷 연결을 확인해 주세요');
+    setProgressText('측정 완료 (서버 저장 실패)');
     resultButton.classList.remove('hidden');
-    startButton.disabled = false;
-    startButton.textContent = '다시 측정하기';
+    resetButton();
   }
 }
 
@@ -89,7 +65,6 @@ if (!device) {
   window.location.replace('device.html');
 } else {
   renderSummary(device);
-  renderSteps();
   startButton.addEventListener('click', handleStart);
   resultButton.addEventListener('click', () => window.location.assign('result.html'));
   document.getElementById('back-button')

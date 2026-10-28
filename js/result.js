@@ -3,8 +3,7 @@
 // - 점수 계산은 하지 않는다: 이미 collect.js에서 환산해 저장해둔 값을 꺼내 쓴다
 
 import { loadResult, clearDeviceInfo, clearResult } from './store.js';
-
-const USAGE_LABELS = { document: '문서·웹', develop: '개발', video: '영상편집', game: '게임' };
+import { renderSummary } from './summary.js';
 
 const ITEMS = [
   { key: 'compute', label: '연산 속도' },
@@ -16,11 +15,6 @@ const ITEMS = [
 function barClass(score) {
   if (score >= 70) return '';
   return score >= 40 ? 'is-warn' : 'is-bad';
-}
-
-function renderSummary(device) {
-  document.getElementById('device-summary').textContent = `${device.model} · ${device.purchaseYear}년 `
-    + `${device.purchaseMonth}월 구입 · 하루 ${device.dailyHours}시간 · ${USAGE_LABELS[device.usage] || device.usage}`;
 }
 
 // 항목별 점수 막대. 측정하지 못한 항목은 '측정 불가'로 표시한다
