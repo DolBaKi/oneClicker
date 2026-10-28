@@ -35,10 +35,9 @@ export function toRecord({ device, benchmark, stress, parallel, hardware, scores
     parallel_speedup: parallel?.speedup ?? null,
     parallel_efficiency: parallel?.efficiency ?? null,
 
-    compute_score: scores.computeSingle,
-    graphics_score: scores.graphics,
-    memory_score: scores.memory,
+    // 속도는 점수를 매기지 않으므로 보내지 않는다. 원시값(compute_ms 등)은 위에 그대로 있다
     stability_score: scores.stability,
+    spec_score: scores.spec,
     total_score: scores.total,
     interrupted: interrupted === true,
   };

@@ -16,8 +16,10 @@ alter table measurements
   add column if not exists parallel_speedup numeric,     -- 단일 대비 몇 배
   add column if not exists parallel_efficiency numeric,  -- speedup / 코어수
 
-  -- 점수
+  -- 점수. 속도(ms·fps·Mpixel/s)는 점수를 매기지 않고 위의 원시값으로만 저장한다.
+  -- 몇 ms가 몇 점인지 정할 근거 분포가 아직 없어서, 지어낸 기준으로 점수를 만들지 않는다.
   add column if not exists stability_score integer,      -- 안정성 점수 (0~100)
+  add column if not exists spec_score integer,           -- 사양 정합성 점수 (0~100)
 
   -- 사용자가 중간에 그만둔 측정인지. 통계를 낼 때 걸러내려고 남긴다
   add column if not exists interrupted boolean default false;

@@ -2,14 +2,12 @@
 // - 점수와 구입 시기를 합쳐 "지금 어느 정도인지"와 "언제 바꿔야 하는지"를 내는 파일
 // - 점수 환산(scoring.js)과 나눈 이유: 저쪽은 측정값을 점수로만 바꾸고, 시간 개념이 없다
 
-const REPLACE_LINE = 40;        // 이 점수 아래면 교체를 권한다
-const FALLBACK_DROP = 0.55;     // 데이터가 없을 때 쓸 월간 하락 폭(점/월). 아래 주석 참고
-
 /*
-  FALLBACK_DROP은 추정치다. 측정 기록이 쌓이기 전까지만 쓰는 임시 값이고,
-  기록이 충분해지면 getAgeCurve()가 준 실제 분포에서 계산한 값으로 대체된다.
-  값을 코드 여기저기 흩지 않고 이 파일 맨 위에 모아둔 이유도 나중에 지우기 쉬우라고다.
+  교체를 권할 기준선. 측정에서 나온 값이 아니라 우리가 정한 선이다.
+  예전엔 여기에 "월 0.55점씩 떨어진다"는 가정이 있었는데 지웠다. 근거 없는 숫자로
+  "교체까지 25개월" 같은 예측을 만들고 있었기 때문이다. 지어내느니 모른다고 하는 게 맞다.
 */
+const REPLACE_LINE = 40;
 
 // 구입 연월부터 지금까지 몇 개월 지났는지
 export function usageMonths(year, month) {
@@ -41,20 +39,26 @@ export function dropPerMonth(ageCurve) {
 }
 
 /*
-  교체까지 남은 개월 수를 추정한다.
-  이미 기준선 아래면 0을 돌려준다(= 지금 교체 권장).
+  교체까지 남은 개월 수를 계산한다.
+
+  실제로 쌓인 기록(ageCurve)에서 "한 달에 몇 점씩 떨어지는가"를 구할 수 있을 때만 답한다.
+  구하지 못하면 개월 수를 내놓지 않고 그 이유를 돌려준다.
+  임의의 하락 속도를 가정해 숫자를 만들면, 측정이 아니라 지어낸 값을 보여주는 것이 된다.
 */
 export function monthsToReplace(totalScore, ageCurve) {
-  if (totalScore === null || totalScore === undefined) return null;
-  if (totalScore <= REPLACE_LINE) return { months: 0, basis: 'now' };
+  if (totalScore === null || totalScore === undefined) {
+    return { months: null, reason: '총점을 내지 못해 예측할 수 없습니다' };
+  }
 
-  const measured = dropPerMonth(ageCurve);
-  const drop = measured ?? FALLBACK_DROP;
-  const months = Math.round((totalScore - REPLACE_LINE) / drop);
+  const drop = dropPerMonth(ageCurve);
+  if (drop === null) {
+    return { months: null, reason: '비교할 측정 기록이 아직 부족해 예측할 수 없습니다' };
+  }
+  if (totalScore <= REPLACE_LINE) return { months: 0, basis: 'measured' };
 
   return {
-    months: Math.min(months, 120),            // 10년 넘는 예측은 의미가 없어 잘라둔다
-    basis: measured ? 'measured' : 'estimate', // 실제 분포인지 임시 추정인지 밝힌다
+    months: Math.min(Math.round((totalScore - REPLACE_LINE) / drop), 120), // 10년 넘는 예측은 자른다
+    basis: 'measured',
     dropPerMonth: Number(drop.toFixed(2)),
   };
 }
@@ -79,10 +83,18 @@ export function verdict(totalScore, months, percentile) {
   return `${years}년 사용 · 비교할 기록이 ${n}건뿐이라 순위는 아직 보여줄 수 없습니다`;
 }
 
+/*
+  총점에 붙이는 한 줄 상태.
+
+  "교체 권장" 같은 결론은 쓰지 않는다. 지금 총점은 안정성과 사양 정합성, 즉
+  "성능이 유지되는가"만 보고 낸 값이라서 교체 여부를 판단할 근거가 되지 못한다.
+  (속도는 비교 기준이 없어 점수에서 빠져 있고, 교체 시기는 monthsToReplace가 따로 답한다)
+  경계값 80/60/40도 측정에서 나온 것이 아니라 우리가 정한 선이다.
+*/
 export function grade(totalScore) {
   if (totalScore === null || totalScore === undefined) return null;
-  if (totalScore >= 80) return '양호';
-  if (totalScore >= 60) return '주의';
-  if (totalScore > REPLACE_LINE) return '경고';
-  return '교체 권장';
+  if (totalScore >= 80) return '성능이 안정적으로 유지됨';
+  if (totalScore >= 60) return '가벼운 성능 저하';
+  if (totalScore > REPLACE_LINE) return '성능 저하가 뚜렷함';
+  return '성능 저하가 심함';
 }

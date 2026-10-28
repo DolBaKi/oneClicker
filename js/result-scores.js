@@ -4,13 +4,14 @@
 
 import { grade } from './lifespan.js';
 
+/*
+  점수를 매기는 항목은 둘뿐이다.
+  속도(ms, fps, Mpixel/s)는 "몇이 100점인가"를 정할 근거 데이터가 아직 없어서
+  점수로 바꾸지 않고 측정값 그대로 아래 표에 보여준다. scoring.js 주석 참고.
+*/
 const ITEMS = [
-  { key: 'computeSingle', label: '연산 (단일)' },
-  { key: 'computeParallel', label: '연산 (병렬)' },
-  { key: 'graphics', label: '그래픽 처리량' },
-  { key: 'memory', label: '메모리 응답' },
-  { key: 'stability', label: '성능 안정성' },
-  { key: 'spec', label: '사양 정합성' },
+  { key: 'stability', label: '성능 안정성', hint: '부하가 이어질 때 성능이 유지되는 정도' },
+  { key: 'spec', label: '사양 정합성', hint: '가진 코어·메모리만큼 실제로 쓰고 있는지' },
 ];
 
 // 점수대에 따라 막대 색을 고른다 (양호 / 주의 / 위험)
@@ -44,18 +45,14 @@ export function renderScores(scores) {
     enough ? (grade(scores.total) ?? '') : '판정 보류 (측정 부족)';
   renderCoverage(scores);
 
-  document.getElementById('score-list').innerHTML = ITEMS.map(({ key, label }) => {
+  document.getElementById('score-list').innerHTML = ITEMS.map(({ key, label, hint }) => {
     const score = scores[key];
-    if (score === null || score === undefined) {
-      return `<div class="score-row"><span class="score-label">${label}</span>
-        <span class="score-label">측정 불가</span><span class="score-number">-</span></div>`;
-    }
-    return `<div class="score-row">
-      <span class="score-label">${label}</span>
-      <div class="score-bar">
-        <div class="score-bar-fill ${barClass(score)}" style="width: ${score}%"></div>
-      </div>
-      <span class="score-number">${score}</span>
-    </div>`;
+    const bar = (score === null || score === undefined)
+      ? '<span class="score-label">측정 불가</span><span class="score-number">-</span>'
+      : `<div class="score-bar">
+           <div class="score-bar-fill ${barClass(score)}" style="width: ${score}%"></div>
+         </div><span class="score-number">${score}</span>`;
+    return `<div class="score-row"><span class="score-label">${label}</span>${bar}</div>
+      <p class="score-hint">${hint}</p>`;
   }).join('');
 }

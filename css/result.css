@@ -85,3 +85,6 @@
 .raw-values dl { display: grid; grid-template-columns: auto 1fr; gap: 4px var(--space-2); }
 .raw-values dt { color: var(--ink-2); }
 .raw-values dd { text-align: right; }
+
+/* 점수 항목 아래 한 줄 설명 */
+.score-hint { margin: -6px 0 var(--space-2); color: var(--ink-3); font-size: 0.8rem; }
