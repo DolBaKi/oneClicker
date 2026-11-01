@@ -23,7 +23,9 @@ export function stressChart(stress) {
   const innerH = H - PAD.top - PAD.bottom;
 
   const x = (t) => PAD.left + (t / lastT) * innerW;
-  const y = (value) => PAD.top + innerH - (value / peak) * innerH;
+  // peak에 여유(1.1배)를 두는 이유: 그러지 않으면 최고선이 상자 맨 위에 딱 붙어
+  // 테두리에 가려지고, 그 위에 쓰는 "최고 ..." 글씨가 그래프 밖으로 삐져나간다
+  const y = (value) => PAD.top + innerH - (value / (peak * 1.1)) * innerH;
 
   const points = samples.map((s) => `${x(s.t).toFixed(1)},${y(s.throughput).toFixed(1)}`).join(' ');
   const peakY = y(peak).toFixed(1);

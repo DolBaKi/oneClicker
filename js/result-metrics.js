@@ -8,8 +8,9 @@ const sec = (v) => `${(v / 1000).toFixed(1)}초`;
 /*
   표에 넣을 줄 정의. [제목, 값, 값을 문자열로 바꾸는 함수, 설명]
   값이 null이거나 undefined면 '측정 못 함'으로 적는다. 0도 의미 있는 값이라 따로 가른다.
+  캡처 이미지도 같은 목록을 써야 화면과 내용이 어긋나지 않으므로 밖으로 내보낸다.
 */
-function rows({ benchmark, parallel, stress, hardware }) {
+export function metricRows({ benchmark, parallel, stress, hardware }) {
   return {
     '연산·메모리': [
       ['연산 속도 (단일)', benchmark?.compute?.ms, (v) => `${Math.round(v)} ms`,
@@ -53,7 +54,7 @@ const cell = (value, format) => (value === null || value === undefined
   : `<dd>${format(value)}</dd>`);
 
 export function renderMetrics(result) {
-  const groups = rows(result);
+  const groups = metricRows(result);
   document.getElementById('metric-list').innerHTML = Object.entries(groups).map(
     ([title, list]) => `
       <section class="metric-group">
