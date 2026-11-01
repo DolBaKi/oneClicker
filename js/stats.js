@@ -3,7 +3,7 @@
 // - 표를 직접 읽지 않고 함수(RPC)를 부르는 이유: 개별 기록은 남의 것이라 보면 안 되기 때문
 // - 실패해도 서비스가 멈추면 안 되므로, 여기서 잡아서 null을 돌려준다
 
-import { SUPABASE_URL, SUPABASE_KEY } from '../api/config.js';
+import { SUPABASE_URL, SUPABASE_KEY } from '../db/config.js';
 
 // Supabase의 함수 호출 주소는 /rest/v1/rpc/함수이름 이다
 async function callRpc(name, params = {}) {

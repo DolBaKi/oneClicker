@@ -102,8 +102,8 @@ python3 -m http.server 5500
 
 서버에 측정값을 저장하려면 Supabase 설정이 추가로 필요합니다.
 
-1. `api/config.example.js`를 `api/config.js`로 복사하고, 본인 Supabase 주소와 키를 넣습니다
-2. Supabase SQL Editor에서 `api/` 안의 SQL을 순서대로 실행합니다
+1. `db/config.example.js`를 `db/config.js`로 복사하고, 본인 Supabase 주소와 키를 넣습니다
+2. Supabase SQL Editor에서 `db/` 안의 SQL을 순서대로 실행합니다
    (`schema.sql` → `migration-001.sql` → `migration-002-stats.sql`)
 
 설정하지 않아도 측정과 결과 화면은 그대로 동작합니다. 저장만 안 될 뿐입니다.

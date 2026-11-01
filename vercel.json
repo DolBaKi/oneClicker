@@ -1,5 +1,5 @@
 {
   "buildCommand": "node scripts/build-config.mjs",
   "outputDirectory": ".",
-  "cleanUrls": true
+  "framework": null
 }

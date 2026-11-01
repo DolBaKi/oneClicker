@@ -8,7 +8,7 @@ import { scoreAll } from './scoring.js';
 import { renderSummary } from './summary.js';
 import { powerWarning } from './power.js';
 import { startProgress, setStepState, setSubProgress, setProgressText } from './progress.js';
-import { toRecord, insertMeasurement } from '../api/supabase.js';
+import { toRecord, insertMeasurement } from '../db/supabase.js';
 
 const startButton = document.getElementById('start-measure');
 const stopButton = document.getElementById('stop-measure');
