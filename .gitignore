@@ -7,3 +7,6 @@ node_modules
 # Supabase 키가 들어있는 파일. 절대 커밋하지 않는다
 # 새로 받은 사람은 db/config.example.js를 복사해서 db/config.js를 만든다
 db/config.js
+
+# 발표 자료용 스크린샷. 사이트 동작에는 필요 없으므로 올리지 않는다
+test_pictures/
