@@ -1,53 +1,14 @@
 /*
   result.css
-  - 분석 결과 화면 전용 (총점 표시, 항목별 점수 막대, 원시값 목록)
+  - 측정 결과 화면 전용 (지속 부하 그래프, 지표 표)
   - 색상은 tokens.css 변수만 쓴다
 */
 
-/* 총점 */
-.total-score {
+.usage-period {
+  margin-bottom: var(--space-3);
   text-align: center;
-  margin-bottom: var(--space-4);
+  color: var(--ink-2);
 }
-
-.total-score strong {
-  display: block;
-  font-size: 3rem;
-  line-height: 1.2;
-  color: var(--ink);
-}
-
-.total-score span { color: var(--ink-3); font-size: 0.9rem; }
-
-/* 항목별 점수 한 줄 */
-.score-row {
-  display: grid;
-  grid-template-columns: 6em 1fr 3em;
-  align-items: center;
-  gap: var(--space-2);
-  margin-bottom: var(--space-2);
-}
-
-.score-label { color: var(--ink-2); font-size: 0.95rem; }
-.score-number { color: var(--ink); font-weight: 600; text-align: right; }
-
-/* 점수 막대. 길이는 result.js가 style.width로 채운다 */
-.score-bar {
-  height: 10px;
-  border-radius: 5px;
-  background-color: var(--paper);
-  border: 1px solid var(--line);
-  overflow: hidden;
-}
-
-.score-bar-fill { height: 100%; background-color: var(--teal); }
-
-/* 점수대에 따라 색을 바꿔 한눈에 보이게 한다 */
-.score-bar-fill.is-warn { background-color: var(--amber); }
-.score-bar-fill.is-bad { background-color: var(--red); }
-
-#total-grade { display: block; color: var(--ink-2); font-weight: 600; }
-.lifespan { margin-bottom: var(--space-3); text-align: center; color: var(--ink-2); }
 
 /* 지속 부하 그래프 */
 .chart {
@@ -70,25 +31,30 @@
 .chart-tick { fill: var(--ink-3); font-size: 11px; }
 .chart-tick-end { text-anchor: end; }
 
-.stress-note { margin-top: var(--space-1); color: var(--ink); font-size: 0.95rem; }
-.chart-help { margin-bottom: var(--space-3); color: var(--ink-3); font-size: 0.85rem; }
+.stress-note { margin-top: var(--space-1); color: var(--ink); font-weight: 600; }
+.chart-help { margin-bottom: var(--space-2); color: var(--ink-3); font-size: 0.85rem; }
 
-/* 측정 원시값 목록 (접어둔 상태로 보여준다) */
-.raw-values {
-  margin-top: var(--space-3);
-  padding-top: var(--space-3);
-  border-top: 1px solid var(--line);
-  color: var(--ink-3);
-  font-size: 0.85rem;
+/* 측정 지표 표 */
+.metric-group { margin-top: var(--space-3); }
+
+.metrics {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--space-1) var(--space-2);
+  align-items: baseline;
 }
 
-.raw-values dl { display: grid; grid-template-columns: auto 1fr; gap: 4px var(--space-2); }
-.raw-values dt { color: var(--ink-2); }
-.raw-values dd { text-align: right; }
+.metrics dt { color: var(--ink); font-size: 0.95rem; }
+.metrics dd { color: var(--ink); font-weight: 600; text-align: right; white-space: nowrap; }
 
-/* 점수 항목 아래 한 줄 설명 */
-.score-hint { margin: -6px 0 var(--space-2); color: var(--ink-3); font-size: 0.8rem; }
+/* 지표 이름 아래 붙는 뜻풀이 */
+.metric-hint {
+  display: block;
+  margin-top: 2px;
+  color: var(--ink-3);
+  font-size: 0.8rem;
+  font-weight: 400;
+}
 
-/* 다른 기기와의 비교 */
-.rank-note { text-align: center; color: var(--ink); font-weight: 600; }
-.rank-detail { margin-bottom: var(--space-3); text-align: center; color: var(--ink-3); font-size: 0.85rem; }
+/* 재지 못한 값 */
+.metric-none { color: var(--ink-3); font-weight: 400; }
