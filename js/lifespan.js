@@ -54,12 +54,15 @@ export function monthsToReplace(totalScore, ageCurve) {
   if (drop === null) {
     return { months: null, reason: '비교할 측정 기록이 아직 부족해 예측할 수 없습니다' };
   }
-  if (totalScore <= REPLACE_LINE) return { months: 0, basis: 'measured' };
+  // 이름을 perMonth로 둔 이유: dropPerMonth는 위에 있는 함수 이름이라 같은 이름을 쓰면 가려버린다
+  const perMonth = Number(drop.toFixed(2));
+  // 이미 기준선 아래면 남은 개월을 셀 게 없다. 0개월이라고 쓰면 헷갈리므로 따로 표시한다
+  if (totalScore <= REPLACE_LINE) return { months: 0, basis: 'measured', dropPerMonth: perMonth };
 
   return {
     months: Math.min(Math.round((totalScore - REPLACE_LINE) / drop), 120), // 10년 넘는 예측은 자른다
     basis: 'measured',
-    dropPerMonth: Number(drop.toFixed(2)),
+    dropPerMonth: perMonth,
   };
 }
 
@@ -71,11 +74,13 @@ export function monthsToReplace(totalScore, ageCurve) {
 export function verdict(totalScore, months, percentile) {
   const years = (months / 12).toFixed(1);
 
+  // "빠르다/느리다"가 아니라 "상태"로 말한다. 지금 총점은 속도가 아니라
+  // 부하 중 성능이 유지되는 정도를 본 값이라, 속도 표현을 쓰면 다른 뜻이 된다
   if (percentile?.enough) {
     const rank = percentile.percentile;
-    if (rank >= 70) return `${years}년 사용 기기 치고 빠른 편입니다 (상위 ${100 - rank}%)`;
+    if (rank >= 70) return `${years}년 사용 기기 중 상태가 좋은 편입니다 (상위 ${100 - rank}%)`;
     if (rank >= 30) return `${years}년 사용 기기로 평균 수준입니다 (상위 ${100 - rank}%)`;
-    return `같은 조건의 기기보다 느립니다 (하위 ${rank}%)`;
+    return `같은 조건의 기기보다 상태가 나쁩니다 (하위 ${rank}%)`;
   }
 
   // 표본이 모자라면 순위를 말하지 않는다. 5명 중 1등은 1등이 아니다

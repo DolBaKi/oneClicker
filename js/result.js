@@ -7,8 +7,7 @@ import { renderSummary } from './summary.js';
 import { stressChart } from './chart.js';
 import { stabilityNote } from './stability.js';
 import { renderScores } from './result-scores.js';
-import { usageMonths, monthsToReplace } from './lifespan.js';
-import { getAgeCurve } from './stats.js';
+import { renderComparison } from './compare.js';
 
 // 측정값 목록. 값이 없으면 '지원 안 함'으로 둔다
 function renderRaw({ benchmark, parallel, stress, hardware }) {
@@ -37,22 +36,6 @@ function renderStress(result) {
   }
 }
 
-/*
-  사용 기간과 교체 시기.
-  교체 시기는 실제 기록에서 하락 속도를 구할 수 있을 때만 말한다.
-  아직 기록이 없으므로 지금은 "예측할 수 없다"가 정상 결과다.
-  (ageCurve는 Supabase에 기록이 쌓이면 stats.js의 getAgeCurve()가 채워준다)
-*/
-function renderLifespan(result, ageCurve) {
-  const months = usageMonths(result.device.purchaseYear, result.device.purchaseMonth);
-  const used = `${(months / 12).toFixed(1)}년 사용 중`;
-  const estimate = monthsToReplace(result.scores.total, ageCurve);
-
-  document.getElementById('lifespan').textContent = estimate.months === null
-    ? `${used} · ${estimate.reason}`
-    : `${used} · 교체까지 약 ${estimate.months}개월 (측정 기록 ${estimate.dropPerMonth}점/월 기준)`;
-}
-
 const result = loadResult();
 if (!result) {
   window.location.replace('device.html');
@@ -61,8 +44,8 @@ if (!result) {
   renderScores(result.scores);
   renderStress(result);
   renderRaw(result);
-  // 실제 기록을 먼저 물어보고, 받아온 분포로만 교체 시기를 계산한다 (못 받아오면 null)
-  getAgeCurve().then((ageCurve) => renderLifespan(result, ageCurve));
+  // 다른 기기 기록과의 비교는 네트워크를 타므로 화면을 먼저 띄우고 나중에 채운다
+  renderComparison(result);
   document.getElementById('restart-button').addEventListener('click', () => {
     clearDeviceInfo(); // 저장된 값을 비워야 처음부터 다시 입력받는다
     clearResult();

@@ -88,3 +88,7 @@
 
 /* 점수 항목 아래 한 줄 설명 */
 .score-hint { margin: -6px 0 var(--space-2); color: var(--ink-3); font-size: 0.8rem; }
+
+/* 다른 기기와의 비교 */
+.rank-note { text-align: center; color: var(--ink); font-weight: 600; }
+.rank-detail { margin-bottom: var(--space-3); text-align: center; color: var(--ink-3); font-size: 0.85rem; }
