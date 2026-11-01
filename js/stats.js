@@ -3,15 +3,27 @@
 // - 표를 직접 읽지 않고 함수(RPC)를 부르는 이유: 개별 기록은 남의 것이라 보면 안 되기 때문
 // - 실패해도 서비스가 멈추면 안 되므로, 여기서 잡아서 null을 돌려준다
 
-import { SUPABASE_URL, SUPABASE_KEY } from '../db/config.js';
+// 접속 정보는 키 때문에 깃허브에 올리지 않아 파일 자체가 없을 수 있다.
+// 맨 위에서 import하면 그때 화면 전체가 멈추므로 쓰는 순간에 불러온다 (supabase.js와 같은 이유)
+let configPromise = null;
+
+function loadConfig() {
+  if (!configPromise) configPromise = import('../db/config.js').catch(() => null);
+  return configPromise;
+}
 
 // Supabase의 함수 호출 주소는 /rest/v1/rpc/함수이름 이다
 async function callRpc(name, params = {}) {
-  const response = await fetch(`${SUPABASE_URL}/rest/v1/rpc/${name}`, {
+  const config = await loadConfig();
+  if (!config?.SUPABASE_URL || !config?.SUPABASE_KEY) {
+    throw new Error('서버 접속 정보가 없습니다');
+  }
+
+  const response = await fetch(`${config.SUPABASE_URL}/rest/v1/rpc/${name}`, {
     method: 'POST',
     headers: {
-      apikey: SUPABASE_KEY,
-      Authorization: `Bearer ${SUPABASE_KEY}`,
+      apikey: config.SUPABASE_KEY,
+      Authorization: `Bearer ${config.SUPABASE_KEY}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(params),
