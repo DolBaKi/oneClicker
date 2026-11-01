@@ -28,15 +28,16 @@ async function readCpu() {
 }
 
 /* RAM ------------------------------------------------------------------
-   deviceMemory는 최댓값이 8이다. 32GB 기기도 8을 돌려준다.
-   0.25 / 0.5 / 1 / 2 / 4 / 8 여섯 단계로만 반올림해서 주기 때문이다.
-   그래서 8이 나오면 "정확히 8GB"가 아니라 "8GB 이상"으로 읽어야 한다. */
+   deviceMemory는 실제 용량이 아니라 2의 거듭제곱으로 반올림한 "대략값"이다.
+   지문 추적을 막으려고 뭉뚱그려 주고 브라우저에 따라 상한도 둔다(8에서 자르는 곳도 있다).
+   12GB와 16GB처럼 가까운 용량은 구분되지 않는다고 보고 써야 한다.
+   사파리처럼 아예 값을 안 주는 브라우저도 많아서 null이 정상 결과 중 하나다. */
 function readRam() {
   const value = navigator.deviceMemory;
   if (value === undefined || value === null) {
-    return { value: null, isCapped: false, supported: false };
+    return { value: null, approximate: true, supported: false };
   }
-  return { value, isCapped: value >= 8, supported: true };
+  return { value, approximate: true, supported: true };
 }
 
 /* GPU (1) WebGPU 우선 --------------------------------------------------

@@ -18,8 +18,8 @@ function renderRaw({ benchmark, parallel, stress, hardware }) {
     ['그래픽 유지 처리량', stress?.sustained, (v) => `${v} Mpixel/s`],
     ['메모리 응답', benchmark?.memory?.ms, (v) => `${Math.round(v)} ms`],
     ['CPU 코어 수', hardware?.cpu?.cores, (v) => `${v}개`],
-    ['메모리 용량', hardware?.ram?.value,
-      (v) => (hardware.ram.isCapped ? `${v} GB 이상` : `약 ${v} GB`)],
+    // deviceMemory는 2의 거듭제곱으로 반올림한 대략값이라 '약'을 붙인다
+    ['메모리 용량', hardware?.ram?.value, (v) => `약 ${v} GB`],
     ['GPU', hardware?.gpu?.renderer, (v) => String(v)],
   ];
   document.getElementById('raw-list').innerHTML = rows.map(([label, value, format]) =>
