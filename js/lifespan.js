@@ -16,11 +16,8 @@ export function usageMonths(year, month) {
   return Math.max(0, months);
 }
 
-/*
-  연식별 평균 점수 곡선에서 "한 달에 몇 점씩 떨어지는지"를 구한다.
-  최소제곱법으로 직선을 맞춰 기울기만 가져온다.
-  구간이 2개 미만이면 직선을 그릴 수 없으므로 null을 돌려준다.
-*/
+// 연식별 평균 점수 곡선에서 "한 달에 몇 점씩 떨어지는지"를 구한다.
+// 최소제곱법으로 직선을 맞춰 기울기만 가져온다. 구간이 2개 미만이면 직선을 못 그려 null.
 export function dropPerMonth(ageCurve) {
   if (!ageCurve || ageCurve.length < 2) return null;
 
@@ -66,11 +63,8 @@ export function monthsToReplace(totalScore, ageCurve) {
   };
 }
 
-/*
-  같은 또래 기기와 비교해 한 줄 판단을 만든다.
-  벤치마크 점수만으로는 "원래 느린 신형"과 "낡아서 느린 구형"을 구분할 수 없어서,
-  사용 개월 수를 반드시 같이 본다.
-*/
+// 같은 또래 기기와 비교해 한 줄 판단을 만든다.
+// 점수만으로는 "원래 느린 신형"과 "낡아서 느린 구형"이 구분되지 않아 사용 개월을 같이 본다.
 export function verdict(totalScore, months, percentile) {
   const years = (months / 12).toFixed(1);
 
