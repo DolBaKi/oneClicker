@@ -201,18 +201,21 @@ export async function restoreSelection(modelId) {
   choose(0);
 }
 
+// "감지한 사양" 줄을 현재 detected 값으로 다시 그린다
+function renderDetectedLine(measuredNote) {
+  const text = describeDetected(detected);
+  if (!text) return;
+  detectedLine.textContent = `이 노트북에서 읽은 사양: ${text}${measuredNote || ''}. `
+    + '이 사양과 맞는 모델에는 "사양 일치"가 붙습니다.';
+  detectedLine.hidden = false;
+}
+
 async function init() {
   [models, detected] = await Promise.all([loadModels(), detectForMatching()]);
-  const text = describeDetected(detected);
-  if (text) {
-    detectedLine.textContent = `이 노트북에서 읽은 사양: ${text}. `
-      + '이 사양과 맞는 모델에는 "사양 일치"가 붙습니다.';
-    detectedLine.hidden = false;
-  }
+  renderDetectedLine(); // 먼저 브라우저가 준 값으로 바로 보여 준다
   if (!models.length) {
     showStatus('모델 목록을 불러오지 못했습니다. 모델명을 직접 입력해 주세요.', '');
   }
-  // 목록이 늦게 도착했는데 이미 글자를 쳐 놨다면 바로 결과를 보여 준다
   if (document.activeElement === input && input.value.trim() && !selected) update();
 }
 
