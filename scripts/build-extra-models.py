@@ -34,9 +34,30 @@ def merge_recrawl(models):
     return added
 
 
+def merge_file(models, fname, label):
+    # 이름이 겹치지 않는 모델만 더하는 일반 병합 (파일은 이미 models.json 형식).
+    path = HERE.parent / 'data' / fname
+    if not path.exists():
+        return 0
+    extra = json.loads(path.read_text(encoding='utf-8'))
+    have = {m['m'].lower().strip() for m in models}
+    added = 0
+    for e in extra:
+        name = e.get('m', '').strip()
+        if not name or name.lower() in have:
+            continue
+        have.add(name.lower())
+        models.append(e)
+        added += 1
+    print(f'{label} {added}종 추가')
+    return added
+
+
 def main():
     models = json.loads(OUT.read_text(encoding='utf-8'))
     total = merge_recrawl(models)
+    # 에누리(price.enuri.com, robots 허용) 국내 노트북. 국내 판매 config 코드까지 검색되게 한다.
+    total += merge_file(models, 'enuri_models.json', '에누리 국내')
     for fname, vendor in SOURCES:
         path = HERE.parent / 'data' / fname
         if not path.exists():
