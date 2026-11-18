@@ -107,7 +107,9 @@ function choose(index) {
 function update() {
   selected = null; // 글자를 고치면 고른 모델은 풀린다 (이름과 선택이 어긋나지 않게)
   showStatus('', '');
-  results = searchModels(models, input.value, detected);
+  // 20개까지 보여 준다. "맥북"처럼 넓게 치면 최신만 몇 개 뜨고 구형이 안 보이던 문제를 줄인다.
+  // 목록(.combo-list)은 max-height로 스크롤되므로 개수가 많아도 화면을 넘지 않는다.
+  results = searchModels(models, input.value, detected, 20);
   activeIndex = -1;
   renderList();
 }
