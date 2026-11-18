@@ -77,7 +77,9 @@ export async function renderSpecCompare(result) {
       <tbody>
         ${row('CPU', cpus || '-', '브라우저가 알려 주지 않음', '')}
         ${row('스레드 수', model.threads.length ? `${model.threads.join('·')}개` : '-',
-    detected.threads ? `${detected.threads}개` : '읽지 못함', MARK[hw.threads])}
+    detected.threads
+      ? `${detected.threads}개${model.threads.includes(detected.threads * 2) ? ' (코어 수로 보고됨)' : ''}`
+      : '읽지 못함', MARK[hw.threads])}
         ${row('그래픽', listedGpu, measuredGpu, MARK[hw.gpu])}
       </tbody>
     </table>

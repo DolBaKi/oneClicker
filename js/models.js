@@ -85,8 +85,9 @@ function prepare(row) {
     gpus: row.g ?? [],
     brands: row.b ?? [],
     codes: codes.filter((code) => /\d/.test(code)),
-    // 한글 이름 모델도 영어 검색어로 찾히도록, 원래 이름과 영어 변환본을 함께 색인한다
-    haystack: compact(`${row.v} ${row.m} ${romanize(row.m)}`),
+    // 한글 이름 모델도 영어 검색어로 찾히도록 원래 이름과 영어 변환본을 함께 색인하고,
+    // 출시 연도도 넣는다. 맥북처럼 이름에 연도 대신 칩(M5)만 있는 모델도 "맥북프로 2025"로 찾게 한다.
+    haystack: compact(`${row.v} ${row.m} ${romanize(row.m)} ${row.y ?? ''}`),
   };
 }
 
@@ -111,8 +112,14 @@ const GPU_BRANDS = ['intel', 'amd', 'apple', 'qualcomm'];
 export function matchHardware(model, detected) {
   if (!detected) return { status: 'unknown', threads: null, gpu: null };
 
-  const threads = model.threads.length && detected.threads
-    ? model.threads.includes(detected.threads) : null;
+  /*
+    브라우저의 hardwareConcurrency는 보통 논리 프로세서(스레드) 수지만, 브라우저·OS·개인정보
+    설정에 따라 물리 코어 수(스레드의 절반)만 알려주기도 한다. 그래서 6코어 12스레드 노트북이
+    6으로 보고되는 일이 흔하다. 읽은 값 그대로거나 그 두 배가 목록 스레드 수와 맞으면 일치로 본다.
+  */
+  const d = detected.threads;
+  const threads = (model.threads.length && d)
+    ? (model.threads.includes(d) || model.threads.includes(d * 2)) : null;
 
   let gpu = null;
   if (model.gpus.length && detected.gpuNames.length) {
@@ -213,6 +220,7 @@ export function shortGpuName(name) {
 
 export function describeDetected(detected) {
   if (!detected) return '';
-  return [shortGpuName(detected.gpuNames[0]), detected.threads ? `${detected.threads}스레드` : null]
+  // hardwareConcurrency는 논리 프로세서 수다. 브라우저가 물리 코어만 줄 때도 있어 "코어/스레드"로 표기한다
+  return [shortGpuName(detected.gpuNames[0]), detected.threads ? `${detected.threads}코어/스레드` : null]
     .filter(Boolean).join(' · ');
 }
