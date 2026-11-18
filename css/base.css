@@ -35,3 +35,6 @@ button:hover {
 p {
   color: var(--ink-2);
 }
+
+/* hidden 속성을 단 요소는 display를 따로 줬더라도 확실히 숨긴다 */
+[hidden] { display: none !important; }

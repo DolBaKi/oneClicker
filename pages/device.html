@@ -33,11 +33,53 @@
 
       <!-- novalidate: 브라우저 기본 경고 대신 우리가 만든 에러 메시지를 쓰기 위해 끈다 -->
       <form id="device-form" novalidate>
-        <!-- 모델명 -->
+        <!-- 모델명: 검색해서 고르거나 직접 입력한다. 검색·대조는 model-search.js가 맡는다 -->
         <div class="field" id="field-model">
-          <label class="field-label" for="model">모델명</label>
-          <input class="field-input" type="text" id="model" placeholder="예: 갤럭시북3 NT750" />
+          <div class="field-label-row">
+            <label class="field-label" for="model">모델명</label>
+            <button class="help-toggle" type="button" id="model-help-toggle"
+              aria-expanded="false" aria-controls="model-help" aria-label="모델명 찾는 법">?</button>
+          </div>
+
+          <div class="combo">
+            <input class="field-input" type="text" id="model" autocomplete="off"
+              placeholder="예: 그램 16, 17Z90R, 갤럭시북, 맥북에어" />
+            <ul class="combo-list" id="model-options" role="listbox" aria-label="모델 후보" hidden></ul>
+          </div>
+
+          <p class="model-note" id="model-detected" hidden></p>
+          <p class="model-note" id="model-status" hidden></p>
           <span class="field-error" id="error-model"></span>
+
+          <!-- 모델명 찾는 법. 운영체제에 맞는 항목은 자동으로 펼쳐진다 -->
+          <div class="help-panel" id="model-help" hidden>
+            <details class="help-item" data-os="windows">
+              <summary>Windows 노트북</summary>
+              <ol>
+                <li>노트북 <strong>바닥 라벨</strong>의 "모델명" 또는 "Model" 칸을 봅니다. (예: 15Z90R, NT950XED)</li>
+                <li>시작 버튼을 오른쪽 클릭 → <strong>터미널</strong>(또는 Windows PowerShell)을 열고
+                  아래 명령을 붙여 넣으면 <strong>Model</strong> 줄에 모델명이 나옵니다.
+                  레노버는 <strong>SystemFamily</strong> 줄이 판매 이름입니다.
+                  <div class="code-box">
+                    <code id="cmd-windows">Get-CimInstance Win32_ComputerSystem | Format-List Manufacturer, Model, SystemFamily</code>
+                    <button class="copy-button" type="button" data-copy="cmd-windows">복사</button>
+                  </div>
+                </li>
+                <li><strong>Win + R</strong> → <code>msinfo32</code> 입력 → "시스템 모델" 항목을 봐도 됩니다.</li>
+              </ol>
+            </details>
+            <details class="help-item" data-os="mac">
+              <summary>맥북</summary>
+              <ol>
+                <li>화면 왼쪽 위 <strong>사과 메뉴 → 이 Mac에 관하여</strong>를 누릅니다.</li>
+                <li>이름 아래 줄(예: MacBook Air (M2, 2022))을 그대로 입력하면 됩니다.</li>
+              </ol>
+            </details>
+            <p class="help-foot">
+              그래도 모르겠다면 제조사와 시리즈(예: 삼성 갤럭시북)만 입력해도 진행할 수 있어요.
+              이때는 결과 화면에서 이 모델의 표준 사양과 비교하는 부분만 빠집니다.
+            </p>
+          </div>
         </div>
 
         <!-- 구입 연월: 연도 목록은 device.js가 현재 연도 기준으로 자동으로 채운다 -->

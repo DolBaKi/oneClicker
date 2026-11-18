@@ -28,6 +28,8 @@ function loadConfig() {
 export function toRecord({ device, benchmark, stress, parallel, hardware, scores, interrupted }) {
   return {
     model: device.model,
+    // 목록에서 고른 모델의 id (직접 입력했으면 null). 같은 모델끼리 묶어 비교할 때 쓴다
+    model_id: device.modelId ?? null,
     purchase_year: Number(device.purchaseYear),
     purchase_month: Number(device.purchaseMonth),
     daily_hours: device.dailyHours,
@@ -64,7 +66,7 @@ export async function insertMeasurement(record) {
     throw new Error('서버 접속 정보가 없어 저장을 건너뜁니다');
   }
 
-  const response = await fetch(`${config.SUPABASE_URL}/rest/v1/${TABLE}`, {
+  const send = (body) => fetch(`${config.SUPABASE_URL}/rest/v1/${TABLE}`, {
     method: 'POST',
     headers: {
       apikey: config.SUPABASE_KEY,
@@ -72,8 +74,29 @@ export async function insertMeasurement(record) {
       'Content-Type': 'application/json',
       Prefer: 'return=minimal', // 저장만 하고 저장된 내용을 돌려받지는 않는다
     },
-    body: JSON.stringify(record),
+    body: JSON.stringify(body),
   });
+
+  let body = { ...record };
+  let response = await send(body);
+
+  /*
+    새 칸(예: model_id)을 코드에 먼저 넣고 데이터베이스에는 아직 마이그레이션을 안 돌렸다면
+    Supabase가 "그런 칸이 없다(PGRST204)"며 저장 전체를 거부한다.
+    칸 하나 때문에 측정 기록을 통째로 잃으면 안 되므로, 없다는 칸만 빼고 다시 보낸다.
+    (몇 개가 빠졌는지는 콘솔에 남겨 마이그레이션을 잊은 걸 알아챌 수 있게 한다)
+  */
+  for (let tries = 0; !response.ok && tries < 3; tries++) {
+    const text = await response.text();
+    const missing = text.match(/Could not find the '([a-z_]+)' column/)?.[1];
+    if (!missing || !(missing in body)) {
+      throw new Error(`Supabase 저장 실패 (${response.status}): ${text}`);
+    }
+    console.warn(`데이터베이스에 '${missing}' 칸이 없어 빼고 저장합니다. db/migration-003.sql을 실행하세요`);
+    delete body[missing];
+    body = { ...body };
+    response = await send(body);
+  }
 
   if (!response.ok) {
     throw new Error(`Supabase 저장 실패 (${response.status}): ${await response.text()}`);

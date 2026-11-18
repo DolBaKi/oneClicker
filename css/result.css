@@ -58,3 +58,17 @@
 
 /* 재지 못한 값 */
 .metric-none { color: var(--ink-3); font-weight: 400; }
+
+/* ── 모델 표준 사양과 비교 ── */
+.spec-section { margin-bottom: var(--space-3); }
+.card p.spec-model { margin-bottom: var(--space-1); font-weight: 600; }
+.spec-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; margin-bottom: var(--space-1); }
+.spec-table th,
+.spec-table td { padding: 8px 6px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.spec-table thead th { font-size: 0.78rem; font-weight: 600; color: var(--ink-3); }
+.spec-table tbody th { font-weight: 600; white-space: nowrap; }
+.spec-unknown { font-size: 0.78rem; color: var(--ink-3); white-space: nowrap; }
+.card p.model-warn { color: var(--amber); font-size: 0.85rem; }
+/* 마지막 칸(일치/다름)은 내용만큼만 차지하고 줄바꿈하지 않는다 */
+.spec-table td:last-child { width: 1%; white-space: nowrap; }
+.spec-table .badge { margin-left: 0; white-space: nowrap; }

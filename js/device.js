@@ -3,7 +3,8 @@
 // - 검증은 validate.js에 맡긴다: 화면 코드와 규칙 코드를 섞지 않아야 규칙이 바뀌어도 화면 코드를 안 고친다
 
 import { validateDeviceForm } from './validate.js';
-import { saveDeviceInfo } from './store.js';
+import { saveDeviceInfo, loadDeviceInfo } from './store.js';
+import { selectedModel, restoreSelection } from './model-search.js';
 
 // 검증 결과의 항목 이름 -> 화면 요소 id 묶음 (에러 표시와 포커스에 같이 쓴다)
 const FIELDS = {
@@ -88,13 +89,31 @@ function handleNext(event) {
     return;
   }
   values.dailyHours = Number(values.dailyHours); // 저장할 때는 문자열이 아닌 숫자로 통일
-  if (saveDeviceInfo(values)) {
+  // 목록에서 고른 모델이면 id를 같이 넘긴다. 결과 화면이 이 id로 표준 사양을 찾는다
+  if (saveDeviceInfo({ ...values, model: values.model.trim(), ...selectedModel() })) {
     window.location.href = 'collect.html';
   } else {
     alert('기기 정보를 저장하지 못했습니다. 브라우저의 저장 기능이 꺼져 있는지 확인해 주세요');
   }
 }
 
+/*
+  [이전]으로 돌아왔을 때 입력했던 값을 다시 채운다 (피드백: 이전 버튼을 누르면 다 지워진다).
+  저장소에 남아 있는 값을 그대로 칸에 넣기만 하고, 검증은 다음 단계로 넘어갈 때 다시 한다.
+*/
+function restoreForm() {
+  const saved = loadDeviceInfo();
+  if (!saved) return;
+  document.getElementById('model').value = saved.model ?? '';
+  document.getElementById('purchase-year').value = saved.purchaseYear ?? '';
+  document.getElementById('purchase-month').value = saved.purchaseMonth ?? '';
+  document.getElementById('daily-hours').value = saved.dailyHours ?? '';
+  const usage = document.querySelector(`input[name="usage"][value="${saved.usage}"]`);
+  if (usage) usage.checked = true;
+  restoreSelection(saved.modelId);
+}
+
 fillYearOptions();
+restoreForm();
 bindLiveClear();
 document.getElementById('device-form').addEventListener('submit', handleNext);

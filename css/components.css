@@ -93,3 +93,98 @@
 }
 
 .radio input { accent-color: var(--teal); }
+
+/* ── 모델명 검색 ── */
+.field-label-row { display: flex; align-items: center; gap: var(--space-1); margin-bottom: var(--space-1); }
+.field-label-row .field-label { margin-bottom: 0; }
+
+/* 물음표 도움말 버튼: 작은 원 */
+.help-toggle {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background-color: var(--paper);
+  color: var(--ink-2);
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1;
+}
+.help-toggle[aria-expanded="true"] { background-color: var(--ink); border-color: var(--ink); color: var(--paper); }
+
+/* 입력칸 바로 아래에 붙는 후보 목록 */
+.combo { position: relative; }
+.combo-list {
+  position: absolute;
+  z-index: 10;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  max-height: 320px;
+  overflow-y: auto;
+  list-style: none;
+  background-color: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: 0 6px 20px rgba(27, 38, 48, 0.12);
+}
+.combo-option {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--soft);
+}
+.combo-option:last-child { border-bottom: none; }
+.combo-option:hover,
+.combo-option.is-active { background-color: var(--soft); }
+.combo-name { font-size: 0.95rem; color: var(--ink); }
+.combo-detail { font-size: 0.8rem; color: var(--ink-3); }
+.combo-empty { padding: 12px; font-size: 0.85rem; color: var(--ink-2); }
+
+.badge {
+  display: inline-block;
+  margin-left: 4px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  vertical-align: 1px;
+}
+.badge--ok { background-color: var(--teal); color: var(--paper); }
+.badge--warn { border: 1px solid var(--amber); color: var(--amber); }
+
+/* 입력칸 아래 안내 문장 (감지한 사양, 선택 결과) */
+.field .model-note { margin: var(--space-1) 0 0; font-size: 0.85rem; color: var(--ink-2); }
+.field .model-note--ok { color: var(--teal); }
+.field .model-note--warn { color: var(--amber); }
+
+/* 모델명 찾는 법 */
+.help-panel {
+  margin-top: var(--space-2);
+  padding: var(--space-2);
+  background-color: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 0.88rem;
+  color: var(--ink-2);
+}
+.help-item + .help-item { margin-top: var(--space-1); }
+.help-item summary { cursor: pointer; font-weight: 600; color: var(--ink); }
+.help-item ol { margin: var(--space-1) 0 0 1.2em; }
+.help-item li + li { margin-top: 6px; }
+.help-panel .help-foot { margin: var(--space-2) 0 0; font-size: 0.82rem; color: var(--ink-3); }
+
+.code-box {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-1);
+  margin-top: 6px;
+  padding: 8px;
+  background-color: var(--soft);
+  border-radius: 6px;
+}
+.code-box code { flex: 1; font-size: 0.78rem; word-break: break-all; color: var(--ink); }
+.copy-button { padding: 4px 10px; font-size: 0.8rem; white-space: nowrap; }
