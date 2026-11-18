@@ -14,9 +14,29 @@ OUT = HERE.parent / 'data' / 'models.json'
 SOURCES = [('apple_extra.json', 'apple'), ('samsung_extra.json', 'samsung')]
 
 
+def merge_recrawl(models):
+    # schemanetworks(공개 소스)를 연도 제한 없이 다시 긁어 기존 CSV가 놓친 노트북을 더한다.
+    # 이름이 이미 있으면 건너뛴다. 값은 소스 그대로(연도·스레드·GPU·CPU 제조사).
+    path = HERE.parent / 'data' / 'recrawl_models.json'
+    if not path.exists():
+        return 0
+    extra = json.loads(path.read_text(encoding='utf-8'))
+    have = {m['m'].lower().strip() for m in models}
+    added = 0
+    for e in extra:
+        name = e.get('m', '').strip()
+        if not name or name.lower() in have:
+            continue
+        have.add(name.lower())
+        models.append(e)
+        added += 1
+    print(f'재크롤 {added}종 추가')
+    return added
+
+
 def main():
     models = json.loads(OUT.read_text(encoding='utf-8'))
-    total = 0
+    total = merge_recrawl(models)
     for fname, vendor in SOURCES:
         path = HERE.parent / 'data' / fname
         if not path.exists():
