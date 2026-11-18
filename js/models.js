@@ -59,10 +59,15 @@ const KOREAN_NAMES = [
 // 비교할 때는 대소문자·띄어쓰기·기호를 무시한다 ("17Z90R", "17z90 r", "17Z90R-G" 모두 같은 걸 찾게)
 const compact = (text) => text.toLowerCase().replace(/[^a-z0-9가-힣]/g, '');
 
+// 한글 이름을 영어 표기로 바꾼다 (갤럭시북 -> galaxy book). 검색어와 모델 이름 양쪽에 같이 쓴다
+function romanize(text) {
+  let out = text.toLowerCase();
+  KOREAN_NAMES.forEach(([ko, en]) => { out = out.split(ko).join(` ${en} `); });
+  return out;
+}
+
 function queryTokens(query) {
-  let text = query.toLowerCase();
-  KOREAN_NAMES.forEach(([ko, en]) => { text = text.split(ko).join(` ${en} `); });
-  return text.split(/\s+/).map(compact).filter(Boolean);
+  return romanize(query).split(/\s+/).map(compact).filter(Boolean);
 }
 
 // 모델명 괄호 속 코드("LG gram 16 (16Z90R)"의 16Z90R). 바닥 라벨에 적힌 값과 같아서 따로 뽑아 둔다
@@ -80,7 +85,8 @@ function prepare(row) {
     gpus: row.g ?? [],
     brands: row.b ?? [],
     codes: codes.filter((code) => /\d/.test(code)),
-    haystack: compact(`${row.v} ${row.m}`),
+    // 한글 이름 모델도 영어 검색어로 찾히도록, 원래 이름과 영어 변환본을 함께 색인한다
+    haystack: compact(`${row.v} ${row.m} ${romanize(row.m)}`),
   };
 }
 
