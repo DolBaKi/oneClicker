@@ -1,24 +1,268 @@
 [
- {"m":"MacBook (13-inch, Mid 2010)","y":2010,"t":2,"g":"geforce 320m","b":"intel"},
- {"m":"MacBook Air (11-inch, Mid 2011)","y":2011,"t":4,"g":"hd graphics 3000","b":"intel"},
- {"m":"MacBook Air (13-inch, Mid 2011)","y":2011,"t":4,"g":"hd graphics 3000","b":"intel"},
- {"m":"MacBook Pro (13-inch, Early 2011)","y":2011,"t":4,"g":"hd graphics 3000","b":"intel"},
- {"m":"MacBook Pro (15-inch, Early 2011)","y":2011,"t":8,"g":"hd graphics 3000","b":"intel"},
- {"m":"MacBook Air (11-inch, Mid 2012)","y":2012,"t":4,"g":"hd graphics 4000","b":"intel"},
- {"m":"MacBook Air (13-inch, Mid 2012)","y":2012,"t":4,"g":"hd graphics 4000","b":"intel"},
- {"m":"MacBook Pro (13-inch, Mid 2012)","y":2012,"t":4,"g":"hd graphics 4000","b":"intel"},
- {"m":"MacBook Pro (15-inch, Mid 2012)","y":2012,"t":8,"g":"hd graphics 4000","b":"intel"},
- {"m":"MacBook Pro (Retina, 15-inch, Mid 2012)","y":2012,"t":8,"g":"hd graphics 4000","b":"intel"},
- {"m":"MacBook Air (11-inch, Mid 2013)","y":2013,"t":4,"g":"hd graphics 5000","b":"intel"},
- {"m":"MacBook Air (13-inch, Mid 2013)","y":2013,"t":4,"g":"hd graphics 5000","b":"intel"},
- {"m":"MacBook Pro (Retina, 13-inch, Late 2013)","y":2013,"t":4,"g":"iris 5100","b":"intel"},
- {"m":"MacBook Pro (Retina, 15-inch, Late 2013)","y":2013,"t":8,"g":"iris pro","b":"intel"},
- {"m":"MacBook Air (11-inch, Early 2014)","y":2014,"t":4,"g":"hd graphics 5000","b":"intel"},
- {"m":"MacBook Air (13-inch, Early 2014)","y":2014,"t":4,"g":"hd graphics 5000","b":"intel"},
- {"m":"MacBook Pro (Retina, 13-inch, Mid 2014)","y":2014,"t":4,"g":"iris 5100","b":"intel"},
- {"m":"MacBook Pro (Retina, 15-inch, Mid 2014)","y":2014,"t":8,"g":"iris pro","b":"intel"},
- {"m":"MacBook (Retina, 12-inch, Early 2016)","y":2016,"t":4,"g":"hd graphics 515","b":"intel"},
- {"m":"MacBook Pro (13-inch, M2, 2022)","y":2022,"t":8,"g":"apple m2","b":"apple"},
- {"m":"MacBook Air (13-inch, M3, 2024)","y":2024,"t":8,"g":"apple m3","b":"apple"},
- {"m":"MacBook Air (15-inch, M4, 2025)","y":2025,"t":10,"g":"apple m4","b":"apple"}
+ {
+  "m": "MacBook (13-inch, Mid 2010)",
+  "y": 2010,
+  "t": 2,
+  "g": "geforce 320m",
+  "b": "intel"
+ },
+ {
+  "m": "MacBook Air (11-inch, Mid 2011)",
+  "y": 2011,
+  "t": 4,
+  "g": "hd graphics 3000",
+  "b": "intel"
+ },
+ {
+  "m": "MacBook Air (13-inch, Mid 2011)",
+  "y": 2011,
+  "t": 4,
+  "g": "hd graphics 3000",
+  "b": "intel"
+ },
+ {
+  "m": "MacBook Pro (13-inch, Early 2011)",
+  "y": 2011,
+  "t": 4,
+  "g": "hd graphics 3000",
+  "b": "intel"
+ },
+ {
+  "m": "MacBook Pro (15-inch, Early 2011)",
+  "y": 2011,
+  "t": 8,
+  "g": "hd graphics 3000",
+  "b": "intel"
+ },
+ {
+  "m": "MacBook Air (11-inch, Mid 2012)",
+  "y": 2012,
+  "t": 4,
+  "g": "hd graphics 4000",
+  "b": "intel"
+ },
+ {
+  "m": "MacBook Air (13-inch, Mid 2012)",
+  "y": 2012,
+  "t": 4,
+  "g": "hd graphics 4000",
+  "b": "intel"
+ },
+ {
+  "m": "MacBook Pro (13-inch, Mid 2012)",
+  "y": 2012,
+  "t": 4,
+  "g": "hd graphics 4000",
+  "b": "intel"
+ },
+ {
+  "m": "MacBook Pro (15-inch, Mid 2012)",
+  "y": 2012,
+  "t": 8,
+  "g": "hd graphics 4000",
+  "b": "intel"
+ },
+ {
+  "m": "MacBook Pro (Retina, 15-inch, Mid 2012)",
+  "y": 2012,
+  "t": 8,
+  "g": "hd graphics 4000",
+  "b": "intel"
+ },
+ {
+  "m": "MacBook Air (11-inch, Mid 2013)",
+  "y": 2013,
+  "t": 4,
+  "g": "hd graphics 5000",
+  "b": "intel"
+ },
+ {
+  "m": "MacBook Air (13-inch, Mid 2013)",
+  "y": 2013,
+  "t": 4,
+  "g": "hd graphics 5000",
+  "b": "intel"
+ },
+ {
+  "m": "MacBook Pro (Retina, 13-inch, Late 2013)",
+  "y": 2013,
+  "t": 4,
+  "g": "iris 5100",
+  "b": "intel"
+ },
+ {
+  "m": "MacBook Pro (Retina, 15-inch, Late 2013)",
+  "y": 2013,
+  "t": 8,
+  "g": "iris pro",
+  "b": "intel"
+ },
+ {
+  "m": "MacBook Air (11-inch, Early 2014)",
+  "y": 2014,
+  "t": 4,
+  "g": "hd graphics 5000",
+  "b": "intel"
+ },
+ {
+  "m": "MacBook Air (13-inch, Early 2014)",
+  "y": 2014,
+  "t": 4,
+  "g": "hd graphics 5000",
+  "b": "intel"
+ },
+ {
+  "m": "MacBook Pro (Retina, 13-inch, Mid 2014)",
+  "y": 2014,
+  "t": 4,
+  "g": "iris 5100",
+  "b": "intel"
+ },
+ {
+  "m": "MacBook Pro (Retina, 15-inch, Mid 2014)",
+  "y": 2014,
+  "t": 8,
+  "g": "iris pro",
+  "b": "intel"
+ },
+ {
+  "m": "MacBook (Retina, 12-inch, Early 2016)",
+  "y": 2016,
+  "t": 4,
+  "g": "hd graphics 515",
+  "b": "intel"
+ },
+ {
+  "m": "MacBook Pro (13-inch, M2, 2022)",
+  "y": 2022,
+  "t": 8,
+  "g": "apple m2",
+  "b": "apple"
+ },
+ {
+  "m": "MacBook Air (13-inch, M3, 2024)",
+  "y": 2024,
+  "t": 8,
+  "g": "apple m3",
+  "b": "apple"
+ },
+ {
+  "m": "MacBook Air (15-inch, M4, 2025)",
+  "y": 2025,
+  "t": 10,
+  "g": "apple m4",
+  "b": "apple"
+ },
+ {
+  "m": "MacBook (13-inch, Late 2008)",
+  "y": 2008,
+  "t": 2,
+  "g": "geforce 9400m",
+  "b": "intel"
+ },
+ {
+  "m": "MacBook (13-inch, Mid 2009)",
+  "y": 2009,
+  "t": 2,
+  "g": "geforce 9400m",
+  "b": "intel"
+ },
+ {
+  "m": "MacBook Air (11-inch, Late 2010)",
+  "y": 2010,
+  "t": 2,
+  "g": "geforce 320m",
+  "b": "intel"
+ },
+ {
+  "m": "MacBook Air (13-inch, Late 2010)",
+  "y": 2010,
+  "t": 2,
+  "g": "geforce 320m",
+  "b": "intel"
+ },
+ {
+  "m": "MacBook Pro (13-inch, Mid 2010)",
+  "y": 2010,
+  "t": 2,
+  "g": "geforce 320m",
+  "b": "intel"
+ },
+ {
+  "m": "MacBook Pro (15-inch, Mid 2010)",
+  "y": 2010,
+  "t": 4,
+  "g": "geforce gt 330m",
+  "b": "intel"
+ },
+ {
+  "m": "MacBook Pro (17-inch, Mid 2010)",
+  "y": 2010,
+  "t": 4,
+  "g": "geforce gt 330m",
+  "b": "intel"
+ },
+ {
+  "m": "MacBook Pro (17-inch, Early 2011)",
+  "y": 2011,
+  "t": 8,
+  "g": "hd graphics 3000",
+  "b": "intel"
+ },
+ {
+  "m": "MacBook Pro (13-inch, Late 2011)",
+  "y": 2011,
+  "t": 4,
+  "g": "hd graphics 3000",
+  "b": "intel"
+ },
+ {
+  "m": "MacBook Pro (15-inch, Late 2011)",
+  "y": 2011,
+  "t": 8,
+  "g": "hd graphics 3000",
+  "b": "intel"
+ },
+ {
+  "m": "MacBook Pro (13-inch, 2016, Two Thunderbolt 3 ports)",
+  "y": 2016,
+  "t": 4,
+  "g": "iris graphics 540",
+  "b": "intel"
+ },
+ {
+  "m": "MacBook Pro (13-inch, 2017, Two Thunderbolt 3 ports, non-touch)",
+  "y": 2017,
+  "t": 4,
+  "g": "iris plus graphics 640",
+  "b": "intel"
+ },
+ {
+  "m": "MacBook Pro (14-inch, M3, 2023)",
+  "y": 2023,
+  "t": 8,
+  "g": "apple m3",
+  "b": "apple"
+ },
+ {
+  "m": "MacBook Pro (14-inch, M3 Pro or M3 Max, 2023)",
+  "y": 2023,
+  "t": 12,
+  "g": "apple m3 pro",
+  "b": "apple"
+ },
+ {
+  "m": "MacBook Pro (16-inch, M3 Pro or M3 Max, 2023)",
+  "y": 2023,
+  "t": 12,
+  "g": "apple m3 max",
+  "b": "apple"
+ },
+ {
+  "m": "MacBook Air (15-inch, M3, 2024)",
+  "y": 2024,
+  "t": 8,
+  "g": "apple m3",
+  "b": "apple"
+ }
 ]
