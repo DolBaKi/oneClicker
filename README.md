@@ -120,10 +120,14 @@ python3 -m http.server 5500
 
 설정하지 않아도 측정과 결과 화면은 그대로 동작합니다. 저장만 안 될 뿐입니다.
 
-모델 목록(`data/models.json`)은 크롤링한 사양 CSV에서 만듭니다. CSV를 새로 받았다면 다시 만들어 주세요.
+모델 목록(`data/models.json`)은 여러 소스를 순서대로 합쳐 만듭니다. CSV를 새로 받았거나 데이터를 보강했다면 아래 네 단계를 순서대로 실행하세요(뒤 단계는 앞 단계의 결과에 덧붙입니다).
 
 ```bash
-python3 scripts/build-models.py ../techspec_laptops_2015_2026.csv
+python3 scripts/build-models.py ../techspec_laptops_2015_2026.csv   # ① 사양 CSV → models.json 기본 생성
+python3 scripts/build-korean-models.py                               # ② 삼성 공식 사이트맵 코드 보강
+python3 scripts/build-extra-models.py                                # ③ 재크롤·에누리·수동 보강 병합
 ```
+
+데이터 출처는 모두 robots.txt가 수집을 허용한 공개 소스(원본 사양 DB, 삼성·LG 공식 사이트맵, price.enuri.com 국내 노트북)와 공식 사양으로 교차 확인한 값만 씁니다. 봇 차단이 걸린 사이트는 쓰지 않습니다.
 
 **기술 스택**: 순수 HTML / CSS / JavaScript (ES Modules). 프레임워크도 빌드 도구도 쓰지 않았습니다.
