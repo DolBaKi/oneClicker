@@ -220,7 +220,8 @@ export function shortGpuName(name) {
 
 export function describeDetected(detected) {
   if (!detected) return '';
-  // hardwareConcurrency는 논리 프로세서 수다. 브라우저가 물리 코어만 줄 때도 있어 "코어/스레드"로 표기한다
-  return [shortGpuName(detected.gpuNames[0]), detected.threads ? `${detected.threads}코어/스레드` : null]
+  // 코어 수로 노트북을 판단한다. hardwareConcurrency 값을 코어 수로 보여 준다
+  // (하이퍼스레딩이 있으면 실제 스레드는 이 두 배일 수 있다)
+  return [shortGpuName(detected.gpuNames[0]), detected.threads ? `${detected.threads}코어` : null]
     .filter(Boolean).join(' · ');
 }

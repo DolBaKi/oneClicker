@@ -76,9 +76,9 @@ export async function renderSpecCompare(result) {
       <thead><tr><th></th><th>표준 사양</th><th>이 노트북</th><th></th></tr></thead>
       <tbody>
         ${row('CPU', cpus || '-', '브라우저가 알려 주지 않음', '')}
-        ${row('스레드 수', model.threads.length ? `${model.threads.join('·')}개` : '-',
+        ${row('CPU 코어/스레드', model.threads.length ? `${model.threads.join('·')}스레드` : '-',
     detected.threads
-      ? `${detected.threads}개${model.threads.includes(detected.threads * 2) ? ' (코어 수로 보고됨)' : ''}`
+      ? `${detected.threads}코어${model.threads.includes(detected.threads * 2) ? ' (= 스레드의 절반, 일치)' : ''}`
       : '읽지 못함', MARK[hw.threads])}
         ${row('그래픽', listedGpu, measuredGpu, MARK[hw.gpu])}
       </tbody>

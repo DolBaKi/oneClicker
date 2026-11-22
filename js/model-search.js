@@ -83,7 +83,7 @@ function explainSelection({ model, hw }) {
   } else if (hw.status === 'mismatch') {
     const reasons = [];
     if (hw.threads === false) {
-      reasons.push(`스레드 수 - 목록 ${model.threads.join('·')}개 / 이 노트북 ${detected.threads}개`);
+      reasons.push(`코어/스레드 - 목록 ${model.threads.join('·')}스레드 / 이 노트북 ${detected.threads}코어`);
     }
     if (hw.gpu === false) reasons.push('그래픽 칩 또는 CPU 제조사가 다름');
     showStatus(`이 노트북에서 읽은 사양과 다릅니다 (${reasons.join(', ')}). `
