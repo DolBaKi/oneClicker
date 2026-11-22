@@ -81,7 +81,7 @@ function prepare(row) {
     name: row.m,
     year: row.y ?? null,
     cpus: row.c ?? [],
-    threads: row.t ?? [],
+    cores: row.t ?? [], // t 필드 = 물리 코어 수
     gpus: row.g ?? [],
     brands: row.b ?? [],
     codes: codes.filter((code) => /\d/.test(code)),
@@ -105,21 +105,21 @@ const GPU_BRANDS = ['intel', 'amd', 'apple', 'qualcomm'];
 
 /*
   이 노트북에서 읽은 값: { threads, gpuNames: [정리된 그래픽 이름들] }
-  돌려주는 값: { status: 'match' | 'mismatch' | 'unknown', threads, gpu }
+  돌려주는 값: { status: 'match' | 'mismatch' | 'unknown', cores, gpu }
     - 각 항목은 true(맞음) / false(다름) / null(목록에 정보가 없어 모름)
   하나라도 다르면 mismatch, 확인한 게 모두 맞으면 match, 확인할 게 없으면 unknown
 */
 export function matchHardware(model, detected) {
-  if (!detected) return { status: 'unknown', threads: null, gpu: null };
+  if (!detected) return { status: 'unknown', cores: null, gpu: null };
 
   /*
-    브라우저의 hardwareConcurrency는 보통 논리 프로세서(스레드) 수지만, 브라우저·OS·개인정보
-    설정에 따라 물리 코어 수(스레드의 절반)만 알려주기도 한다. 그래서 6코어 12스레드 노트북이
-    6으로 보고되는 일이 흔하다. 읽은 값 그대로거나 그 두 배가 목록 스레드 수와 맞으면 일치로 본다.
+    노트북은 코어 수로 판단한다. 브라우저의 hardwareConcurrency는 물리 코어 수(6)를 주기도 하고
+    논리 스레드 수(12)를 주기도 한다. 그래서 읽은 값 d가 "코어 수 이상, 코어 수의 2배 이하"면
+    같은 코어 수로 본다(하이퍼스레딩이면 스레드=코어×2까지, 하이브리드면 그 사이). 범위를 벗어나야 '다름'.
   */
   const d = detected.threads;
-  const threads = (model.threads.length && d)
-    ? (model.threads.includes(d) || model.threads.includes(d * 2)) : null;
+  const cores = (model.cores.length && d)
+    ? model.cores.some((c) => d >= c && d <= c * 2) : null;
 
   let gpu = null;
   if (model.gpus.length && detected.gpuNames.length) {
@@ -133,14 +133,13 @@ export function matchHardware(model, detected) {
   }
 
   /*
-    "일치"는 그래픽 칩 이름까지 맞았을 때만 준다. 스레드 수(8, 12 등)는 겹치는 모델이 너무 많아
-    그것만으로 일치라고 하면 사용자가 틀린 모델을 맞다고 믿게 된다. (직접 세어 보니
-    'Iris Xe + 8스레드'만 해도 55개 모델이 나왔다)
+    "일치"는 그래픽 칩 이름까지 맞았을 때만 준다. 코어 수만으로는 겹치는 모델이 너무 많아
+    그것만으로 일치라고 하면 사용자가 틀린 모델을 맞다고 믿게 된다.
   */
   let status = 'unknown';
-  if (threads === false || gpu === false) status = 'mismatch';
+  if (cores === false || gpu === false) status = 'mismatch';
   else if (gpu === true) status = 'match';
-  return { status, threads, gpu };
+  return { status, cores, gpu };
 }
 
 /* 검색 --------------------------------------------------------------------- */

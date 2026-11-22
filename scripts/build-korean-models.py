@@ -128,8 +128,8 @@ def main():
         # 실측 사양이 있으면 유추값보다 우선한다 (스레드 수는 실측으로만 채운다)
         spec = specs.get(code_base(code))
         if spec:
-            if spec.get('threads'):
-                row['t'] = [spec['threads']]
+            if spec.get('cores'):
+                row['t'] = [spec['cores']]  # t = 코어 수
             if spec.get('gpu'):
                 gpu = spec['gpu']
         if gpu:
@@ -151,8 +151,8 @@ def main():
         if display.lower() in have:
             continue
         row = {'id': f'samsung-{code.lower()}', 'v': 'samsung', 'm': display, 'y': year_from_code(code)}
-        if spec.get('threads'):
-            row['t'] = [spec['threads']]
+        if spec.get('cores'):
+            row['t'] = [spec['cores']]  # t = 코어 수
         if spec.get('gpu'):
             row['g'] = [spec['gpu']]
         row['b'] = ['intel']

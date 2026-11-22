@@ -45,8 +45,8 @@ const escapeHtml = (text) => String(text).replace(/[&<>"]/g,
 
 function detailText(model) {
   const cpu = model.cpus.length > 1 ? `${model.cpus[0]} 외 ${model.cpus.length - 1}개` : model.cpus[0];
-  const threads = model.threads.length ? `${model.threads.join('·')}스레드` : null;
-  return [model.year ? `${model.year}년 출시` : null, cpu, threads].filter(Boolean).join(' · ');
+  const cores = model.cores.length ? `${model.cores.join('·')}코어` : null;
+  return [model.year ? `${model.year}년 출시` : null, cpu, cores].filter(Boolean).join(' · ');
 }
 
 function renderList() {
@@ -82,8 +82,8 @@ function explainSelection({ model, hw }) {
     showStatus(`이 노트북에서 읽은 그래픽 칩(${shortGpuName(gpu)})이 목록의 사양과 맞습니다.`, 'ok');
   } else if (hw.status === 'mismatch') {
     const reasons = [];
-    if (hw.threads === false) {
-      reasons.push(`코어/스레드 - 목록 ${model.threads.join('·')}스레드 / 이 노트북 ${detected.threads}코어`);
+    if (hw.cores === false) {
+      reasons.push(`코어 수 - 목록 ${model.cores.join('·')}코어 / 이 노트북 ${detected.threads}코어`);
     }
     if (hw.gpu === false) reasons.push('그래픽 칩 또는 CPU 제조사가 다름');
     showStatus(`이 노트북에서 읽은 사양과 다릅니다 (${reasons.join(', ')}). `

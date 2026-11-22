@@ -33,10 +33,10 @@ function advice(model, hw, detected) {
     return '고른 모델의 표준 사양과 이 노트북에서 읽은 값이 맞습니다. 모델을 정확히 고른 것으로 보입니다.';
   }
   const lines = [];
-  if (hw.threads === false) {
-    lines.push(`스레드 수가 다릅니다(목록 ${model.threads.join('·')}개, 이 노트북 ${detected.threads}개). `
+  if (hw.cores === false) {
+    lines.push(`코어 수가 다릅니다(목록 ${model.cores.join('·')}코어, 이 노트북 ${detected.threads}). `
       + '같은 이름이라도 CPU 옵션이 다른 모델이거나, 다른 모델을 골랐을 수 있습니다. '
-      + '사파리처럼 스레드 수를 실제보다 적게 알려 주는 브라우저도 있습니다.');
+      + '브라우저가 코어 수를 실제와 다르게 알려 주는 경우도 있습니다.');
   }
   if (hw.gpu === false) {
     lines.push('그래픽 칩이 다릅니다. 외장 그래픽이 있는 노트북은 브라우저가 내장 그래픽만 보여 줄 수 있고, '
@@ -76,10 +76,8 @@ export async function renderSpecCompare(result) {
       <thead><tr><th></th><th>표준 사양</th><th>이 노트북</th><th></th></tr></thead>
       <tbody>
         ${row('CPU', cpus || '-', '브라우저가 알려 주지 않음', '')}
-        ${row('CPU 코어/스레드', model.threads.length ? `${model.threads.join('·')}스레드` : '-',
-    detected.threads
-      ? `${detected.threads}코어${model.threads.includes(detected.threads * 2) ? ' (= 스레드의 절반, 일치)' : ''}`
-      : '읽지 못함', MARK[hw.threads])}
+        ${row('CPU 코어 수', model.cores.length ? `${model.cores.join('·')}코어` : '-',
+    detected.threads ? `${detected.threads}` : '읽지 못함', MARK[hw.cores])}
         ${row('그래픽', listedGpu, measuredGpu, MARK[hw.gpu])}
       </tbody>
     </table>

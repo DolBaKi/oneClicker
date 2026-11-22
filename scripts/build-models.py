@@ -69,8 +69,8 @@ def extract_cpus(text):
     return options[:8]
 
 
-def extract_threads(text):
-    # "2 | 4 | 4" -> [2, 4]
+def extract_cores(text):
+    # "2 | 4 | 4" -> [2, 4]. CPU 옵션별 (물리) 코어 수 목록
     return sorted({int(n) for n in re.findall(r'\d+', text) if 0 < int(n) <= 64})
 
 
@@ -87,7 +87,7 @@ def convert(row):
         'm': row['model'].strip(),
         'y': int(year) if year.isdigit() else None,
         'c': extract_cpus(row['cpu']),
-        't': extract_threads(row['cpu_threads']),
+        't': extract_cores(row['cpu_cores']),  # t 필드 = 물리 코어 수
         'g': extract_gpus(row),
         'b': extract_brands(row['cpu']),
     }
@@ -110,9 +110,9 @@ def main():
     out.write_text(json.dumps(models, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
 
     with_gpu = sum(1 for m in models if 'g' in m)
-    with_threads = sum(1 for m in models if 't' in m)
+    with_cores = sum(1 for m in models if 't' in m)
     print(f'{len(models)}개 모델 -> {out} ({out.stat().st_size // 1024}KB)')
-    print(f'그래픽 칩 이름 있음: {with_gpu}개, 스레드 수 있음: {with_threads}개')
+    print(f'그래픽 칩 이름 있음: {with_gpu}개, 코어 수 있음: {with_cores}개')
 
 
 if __name__ == '__main__':
