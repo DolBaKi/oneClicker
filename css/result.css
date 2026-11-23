@@ -45,7 +45,7 @@
 }
 
 .metrics dt { color: var(--ink); font-size: 0.95rem; }
-.metrics dd { color: var(--ink); font-weight: 600; text-align: right; white-space: nowrap; }
+.metrics dd { color: var(--ink); font-weight: 600; text-align: right; }
 
 /* 지표 이름 아래 붙는 뜻풀이 */
 .metric-hint {
@@ -72,3 +72,82 @@
 /* 마지막 칸(일치/다름)은 내용만큼만 차지하고 줄바꿈하지 않는다 */
 .spec-table td:last-child { width: 1%; white-space: nowrap; }
 .spec-table .badge { margin-left: 0; white-space: nowrap; }
+
+/* ───────────── 종합 요약 ───────────── */
+.result-summary {
+  margin: var(--space-2) 0 var(--space-4);
+  padding: var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: linear-gradient(160deg, var(--paper) 0%, var(--soft) 100%);
+  box-shadow: 0 6px 20px rgba(27, 38, 48, 0.06);
+}
+
+.summary-top {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+.summary-gauge { flex: 0 0 180px; }
+.summary-head { flex: 1; min-width: 200px; }
+
+.gauge { width: 180px; height: auto; display: block; }
+.gauge-bg { fill: none; stroke: var(--line); stroke-width: 12; stroke-linecap: round; }
+.gauge-fg { fill: none; stroke-width: 12; stroke-linecap: round; }
+.gauge-ok { stroke: var(--teal); }
+.gauge-warn { stroke: var(--amber); }
+.gauge-bad { stroke: var(--red); }
+.gauge-score { font-size: 38px; font-weight: 800; fill: var(--ink); }
+.gauge-unit { font-size: 12px; fill: var(--ink-3); }
+
+.card p.summary-grade { font-size: 1.25rem; font-weight: 700; margin-bottom: 6px; color: var(--ink); }
+.card p.summary-verdict { color: var(--ink-2); margin-bottom: 4px; }
+.card p.summary-cov { color: var(--ink-3); font-size: 0.82rem; margin-bottom: 0; }
+
+/* 백분위 막대 */
+.summary-rank { margin-top: var(--space-3); padding-top: var(--space-3); border-top: 1px solid var(--line); }
+.card p.summary-rank-label { font-weight: 600; margin-bottom: var(--space-1); }
+.summary-rank-n { color: var(--ink-3); font-weight: 400; font-size: 0.85rem; }
+.pbar { width: 100%; height: auto; }
+.pbar-track { fill: var(--line); }
+.pbar-mid { stroke: var(--ink-3); stroke-width: 1; stroke-dasharray: 2 2; }
+.pbar-dot { fill: var(--teal); stroke: var(--paper); stroke-width: 2; }
+.pbar-end { fill: var(--ink-3); font-size: 11px; }
+.pbar-end-r { text-anchor: end; }
+.card p.summary-rank-mid { color: var(--ink-3); font-size: 0.8rem; margin: 2px 0 0; }
+
+/* 연식별 평균 그래프 */
+.summary-age { margin-top: var(--space-3); padding-top: var(--space-3); border-top: 1px solid var(--line); }
+.ac-chart { margin-top: var(--space-1); }
+.ac-grid { stroke: var(--line); stroke-width: 0.5; }
+.ac-tick { fill: var(--ink-3); font-size: 11px; }
+.ac-tick-r { text-anchor: end; }
+.ac-line { fill: none; stroke: var(--ink-3); stroke-width: 2; }
+.ac-pt { fill: var(--ink-3); }
+.ac-me { fill: var(--teal); stroke: var(--paper); stroke-width: 2; }
+.ac-me-label { fill: var(--teal); font-size: 12px; font-weight: 700; }
+.card p.summary-replace {
+  margin: var(--space-2) 0 0;
+  padding: var(--space-1) var(--space-2);
+  background-color: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+/* 지표별 평균 비교 */
+.metric-avg { display: block; margin-top: 2px; color: var(--ink-3); font-size: 0.78rem; font-weight: 400; }
+.cmp {
+  display: inline-block;
+  margin-top: 4px;
+  margin-left: 2px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+.cmp-up { background-color: var(--teal); color: var(--paper); }
+.cmp-down { background-color: var(--paper); border: 1px solid var(--red); color: var(--red); }
+.cmp-mid { background-color: var(--paper); border: 1px solid var(--line); color: var(--ink-2); }

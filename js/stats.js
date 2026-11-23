@@ -74,3 +74,30 @@ export async function getAgeCurve() {
     return null;
   }
 }
+
+/*
+  지표별 전체 평균을 가져온다. 결과 화면에서 "내 값 vs 평균"을 보여주는 재료다.
+  migration-004를 아직 실행하지 않았으면 함수가 없어 실패하는데, 그때는 null을 돌려주고
+  화면은 평균 없이 값만 보여준다(점진적으로 켜진다).
+*/
+export async function getMetricAverages() {
+  try {
+    const rows = await callRpc('metric_averages');
+    const row = Array.isArray(rows) ? rows[0] : rows;
+    if (!row) return null;
+    return {
+      sampleCount: Number(row.sample_count),
+      compute_ms: row.compute_ms == null ? null : Number(row.compute_ms),
+      memory_ms: row.memory_ms == null ? null : Number(row.memory_ms),
+      peak_throughput: row.peak_throughput == null ? null : Number(row.peak_throughput),
+      sustained_throughput: row.sustained_throughput == null ? null : Number(row.sustained_throughput),
+      retention: row.retention == null ? null : Number(row.retention),
+      cv: row.cv == null ? null : Number(row.cv),
+      parallel_speedup: row.parallel_speedup == null ? null : Number(row.parallel_speedup),
+      parallel_efficiency: row.parallel_efficiency == null ? null : Number(row.parallel_efficiency),
+    };
+  } catch (error) {
+    console.warn('지표 평균 조회 실패:', error.message);
+    return null;
+  }
+}

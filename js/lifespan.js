@@ -72,9 +72,10 @@ export function verdict(totalScore, months, percentile) {
   // 부하 중 성능이 유지되는 정도를 본 값이라, 속도 표현을 쓰면 다른 뜻이 된다
   if (percentile?.enough) {
     const rank = percentile.percentile;
-    if (rank >= 70) return `${years}년 사용 기기 중 상태가 좋은 편입니다 (상위 ${100 - rank}%)`;
-    if (rank >= 30) return `${years}년 사용 기기로 평균 수준입니다 (상위 ${100 - rank}%)`;
-    return `같은 조건의 기기보다 상태가 나쁩니다 (하위 ${rank}%)`;
+    const top = Math.round(100 - rank); // 상위 몇 %. 소수점 오차를 없앤다
+    if (rank >= 70) return `${years}년 사용 기기 중 상태가 좋은 편입니다 (상위 ${top}%)`;
+    if (rank >= 30) return `${years}년 사용 기기로 평균 수준입니다 (상위 ${top}%)`;
+    return `같은 조건의 기기보다 상태가 나쁩니다 (하위 ${Math.round(rank)}%)`;
   }
 
   // 표본이 모자라면 순위를 말하지 않는다. 5명 중 1등은 1등이 아니다

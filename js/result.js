@@ -8,9 +8,11 @@ import { renderSummary } from './summary.js';
 import { stressChart } from './chart.js';
 import { stabilityNote } from './stability.js';
 import { renderMetrics, throttleSummary } from './result-metrics.js';
+import { getMetricAverages } from './stats.js';
 import { usageMonths } from './lifespan.js';
 import { captureResult, download } from './capture.js';
 import { renderSpecCompare } from './spec-compare.js';
+import { renderSummary as renderResultSummary } from './result-summary.js';
 
 // 지속 부하 그래프와 설명. 그래프를 못 그리면 그 자리에 이유를 적는다
 function renderStress(result) {
@@ -37,9 +39,12 @@ if (!result) {
   document.getElementById('usage-period').textContent =
     `${(months / 12).toFixed(1)}년 사용 중 (${months}개월)`;
 
+  renderResultSummary(result); // 종합 점수·순위·연식 비교. Supabase를 받아 뒤에서 채운다
   renderSpecCompare(result); // 모델 목록을 받아야 해서 기다리지 않고 따로 채운다
   renderStress(result);
-  renderMetrics(result);
+  renderMetrics(result); // 먼저 값만 그린다
+  // 전체 평균을 받아 "내 값 vs 평균" 비교를 덧그린다 (migration-004 실행 전이면 조용히 건너뜀)
+  getMetricAverages().then((averages) => { if (averages) renderMetrics(result, averages); });
 
   // 결과를 그림 파일로 저장. 화면을 찍는 게 아니라 측정값으로 새로 그린다
   const captureButton = document.getElementById('capture-button');

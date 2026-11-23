@@ -50,3 +50,78 @@ export function stressChart(stress) {
         ${(lastT / 1000).toFixed(1)}초</text>
     </svg>`;
 }
+
+/*
+  점수 게이지(반원 다이얼). 0~100 점수를 반원 호로 그린다.
+  색은 점수대에 따라 바뀐다(양호=teal, 주의=amber, 위험=red).
+*/
+export function scoreGauge(score) {
+  if (score === null || score === undefined) return '';
+  const r = 70;
+  const cx = 90;
+  const cy = 86;
+  const start = Math.PI; // 왼쪽(180도)
+  const frac = Math.max(0, Math.min(1, score / 100));
+  const ang = start - frac * Math.PI; // 왼→오 반시계
+  const ex = cx + r * Math.cos(ang);
+  const ey = cy - r * Math.sin(ang);
+  const large = frac > 0.5 ? 1 : 0;
+  const tone = score >= 80 ? 'ok' : score >= 60 ? 'warn' : score > 40 ? 'warn' : 'bad';
+  const bg = `M ${cx - r} ${cy} A ${r} ${r} 0 0 1 ${cx + r} ${cy}`;
+  const fg = `M ${cx - r} ${cy} A ${r} ${r} 0 ${large} 1 ${ex.toFixed(1)} ${ey.toFixed(1)}`;
+  return `
+    <svg class="gauge" viewBox="0 0 180 104" role="img" aria-label="종합 점수 ${Math.round(score)}점">
+      <path class="gauge-bg" d="${bg}" />
+      <path class="gauge-fg gauge-${tone}" d="${fg}" />
+      <text class="gauge-score" x="${cx}" y="78" text-anchor="middle">${Math.round(score)}</text>
+      <text class="gauge-unit" x="${cx}" y="98" text-anchor="middle">점 / 100</text>
+    </svg>`;
+}
+
+/*
+  백분위 막대. 내 위치를 0~100 가로 막대 위의 점으로 찍는다.
+  왼쪽이 하위, 오른쪽이 상위. 중앙값(50) 눈금을 함께 그린다.
+*/
+export function percentileBar(percentile) {
+  const p = Math.max(0, Math.min(100, percentile));
+  return `
+    <svg class="pbar" viewBox="0 0 300 36" role="img" aria-label="상위 ${100 - Math.round(p)}%">
+      <rect class="pbar-track" x="4" y="14" width="292" height="8" rx="4" />
+      <line class="pbar-mid" x1="150" y1="10" x2="150" y2="26" />
+      <circle class="pbar-dot" cx="${(4 + (p / 100) * 292).toFixed(1)}" cy="18" r="7" />
+      <text class="pbar-end" x="4" y="34">하위</text>
+      <text class="pbar-end pbar-end-r" x="296" y="34">상위</text>
+    </svg>`;
+}
+
+/*
+  연식별 평균 점수 곡선. 가로=사용 개월, 세로=평균 점수(0~100).
+  회색 선은 전체 평균 추세, 내 위치는 큰 점으로 표시한다.
+*/
+export function ageCurveChart(ageCurve, myMonths, myScore) {
+  if (!ageCurve || ageCurve.length < 2) return '';
+  const w = 600;
+  const h = 200;
+  const pad = { l: 34, r: 12, t: 16, b: 26 };
+  const iw = w - pad.l - pad.r;
+  const ih = h - pad.t - pad.b;
+  const maxM = Math.max(...ageCurve.map((p) => p.ageMonths), myMonths || 0, 12);
+  const x = (m) => pad.l + (m / maxM) * iw;
+  const y = (s) => pad.t + ih - (Math.max(0, Math.min(100, s)) / 100) * ih;
+  const pts = ageCurve.map((p) => `${x(p.ageMonths).toFixed(1)},${y(p.avgScore).toFixed(1)}`).join(' ');
+  const grid = [0, 25, 50, 75, 100].map((s) => `
+    <line class="ac-grid" x1="${pad.l}" y1="${y(s).toFixed(1)}" x2="${w - pad.r}" y2="${y(s).toFixed(1)}" />
+    <text class="ac-tick" x="${pad.l - 6}" y="${(y(s) + 3).toFixed(1)}" text-anchor="end">${s}</text>`).join('');
+  const dots = ageCurve.map((p) => `<circle class="ac-pt" cx="${x(p.ageMonths).toFixed(1)}" cy="${y(p.avgScore).toFixed(1)}" r="3" />`).join('');
+  const me = (myScore === null || myScore === undefined || myMonths === null) ? '' : `
+    <circle class="ac-me" cx="${x(myMonths).toFixed(1)}" cy="${y(myScore).toFixed(1)}" r="7" />
+    <text class="ac-me-label" x="${x(myMonths).toFixed(1)}" y="${(y(myScore) - 12).toFixed(1)}" text-anchor="middle">내 노트북</text>`;
+  return `
+    <svg class="chart ac-chart" viewBox="0 0 ${w} ${h}" role="img" aria-label="연식별 평균 점수와 내 위치">
+      ${grid}
+      <polyline class="ac-line" points="${pts}" />
+      ${dots}${me}
+      <text class="ac-tick" x="${pad.l}" y="${h - 8}">0개월</text>
+      <text class="ac-tick ac-tick-r" x="${w - pad.r}" y="${h - 8}" text-anchor="end">${maxM}개월</text>
+    </svg>`;
+}
