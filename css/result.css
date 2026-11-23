@@ -151,3 +151,7 @@
 .cmp-up { background-color: var(--teal); color: var(--paper); }
 .cmp-down { background-color: var(--paper); border: 1px solid var(--red); color: var(--red); }
 .cmp-mid { background-color: var(--paper); border: 1px solid var(--line); color: var(--ink-2); }
+
+/* 측정 기록 링크 */
+.result-records-link { text-align: center; margin: var(--space-2) 0; }
+.result-records-link a { color: var(--teal); font-weight: 600; }

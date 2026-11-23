@@ -101,3 +101,29 @@ export async function getMetricAverages() {
     return null;
   }
 }
+
+/*
+  쌓인 측정 기록을 최근 순으로 가져온다 (개인정보 없는 안전한 컬럼만).
+  migration-005를 아직 실행하지 않았으면 함수가 없어 실패하는데, 그때는 null을 돌려준다.
+*/
+export async function getRecentMeasurements(limit = 50) {
+  try {
+    const rows = await callRpc('recent_measurements', { lim: limit });
+    if (!Array.isArray(rows)) return null;
+    return rows.map((r) => ({
+      createdAt: r.created_at,
+      model: r.model,
+      cores: r.cores == null ? null : Number(r.cores),
+      purchaseYear: r.purchase_year == null ? null : Number(r.purchase_year),
+      purchaseMonth: r.purchase_month == null ? null : Number(r.purchase_month),
+      usageType: r.usage_type,
+      totalScore: r.total_score == null ? null : Number(r.total_score),
+      retention: r.retention == null ? null : Number(r.retention),
+      peakThroughput: r.peak_throughput == null ? null : Number(r.peak_throughput),
+      sustainedThroughput: r.sustained_throughput == null ? null : Number(r.sustained_throughput),
+    }));
+  } catch (error) {
+    console.warn('측정 기록 조회 실패:', error.message);
+    return null;
+  }
+}

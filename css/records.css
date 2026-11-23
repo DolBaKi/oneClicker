@@ -1,0 +1,51 @@
+/*
+  records.css
+  - 측정 기록 화면 전용 (요약 통계 + 기록 표)
+*/
+
+.records-lead { color: var(--ink-2); margin-bottom: var(--space-3); }
+
+/* 요약 통계 */
+.records-summary {
+  display: flex;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+  flex-wrap: wrap;
+}
+.rec-stat {
+  flex: 1;
+  min-width: 100px;
+  padding: var(--space-2);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: linear-gradient(160deg, var(--paper) 0%, var(--soft) 100%);
+  text-align: center;
+}
+.rec-stat-num { display: block; font-size: 1.8rem; font-weight: 800; color: var(--ink); }
+.rec-stat-label { display: block; margin-top: 2px; font-size: 0.8rem; color: var(--ink-3); }
+
+/* 기록 표 */
+.rec-table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; }
+.rec-table { width: 100%; border-collapse: collapse; font-size: 0.86rem; white-space: nowrap; }
+.rec-table th,
+.rec-table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--soft); }
+.rec-table thead th {
+  position: sticky; top: 0;
+  background-color: var(--soft);
+  font-size: 0.76rem; font-weight: 700; color: var(--ink-2);
+}
+.rec-table tbody tr:last-child td { border-bottom: none; }
+.rec-table tbody tr:hover td { background-color: var(--soft); }
+.rec-model { font-weight: 600; color: var(--ink); white-space: normal; min-width: 160px; }
+.rec-date { color: var(--ink-3); }
+.rec-sus { color: var(--ink-2); }
+
+/* 점수 배지 */
+.rec-score {
+  display: inline-block; min-width: 30px; text-align: center;
+  padding: 2px 8px; border-radius: 999px; font-weight: 700; font-size: 0.82rem;
+}
+.rec-ok { background-color: var(--teal); color: var(--paper); }
+.rec-warn { background-color: #F4E2C4; color: var(--amber); }
+.rec-bad { background-color: #F3D5CC; color: var(--red); }
+.rec-none { color: var(--ink-3); }

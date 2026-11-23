@@ -108,3 +108,14 @@
   font-size: 0.85rem;
   line-height: 1.6;
 }
+
+/* 측정 기록 링크 */
+.hero-link {
+  display: inline-block;
+  margin-top: var(--space-2);
+  color: #bfe3df;
+  font-size: 0.9rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.hero-link:hover { color: #fff; }

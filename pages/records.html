@@ -1,0 +1,44 @@
+<!--
+  records.html
+  - 측정 기록 화면: Supabase에 쌓인 측정값을 최근 순으로 보여준다
+  - 개인정보 없는 안전한 컬럼만(recent_measurements RPC)
+-->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>측정 기록</title>
+
+  <link rel="stylesheet" as="style" crossorigin
+    href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
+
+  <link rel="stylesheet" href="../css/tokens.css" />
+  <link rel="stylesheet" href="../css/base.css" />
+  <link rel="stylesheet" href="../css/layout.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <link rel="stylesheet" href="../css/measure.css" />
+  <link rel="stylesheet" href="../css/result.css" />
+  <link rel="stylesheet" href="../css/records.css" />
+</head>
+<body>
+  <div class="screen">
+    <div class="card card--wide">
+      <h1>측정 기록</h1>
+      <p class="records-lead">
+        지금까지 쌓인 측정값입니다. 이름·위치 같은 개인정보는 저장하지 않아, 모델과 측정 수치만 보입니다.
+      </p>
+
+      <div id="records-summary" class="records-summary"></div>
+      <div id="records-body"></div>
+
+      <div class="actions">
+        <a class="btn btn-ghost" href="../index.html">첫 화면으로</a>
+        <a class="btn" href="device.html">내 노트북 측정하기</a>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="../js/records.js"></script>
+</body>
+</html>
