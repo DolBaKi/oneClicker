@@ -57,24 +57,21 @@ export function stressChart(stress) {
 */
 export function scoreGauge(score) {
   if (score === null || score === undefined) return '';
-  const r = 70;
+  const r = 68;
   const cx = 90;
-  const cy = 86;
-  const start = Math.PI; // 왼쪽(180도)
-  const frac = Math.max(0, Math.min(1, score / 100));
-  const ang = start - frac * Math.PI; // 왼→오 반시계
-  const ex = cx + r * Math.cos(ang);
-  const ey = cy - r * Math.sin(ang);
-  const large = frac > 0.5 ? 1 : 0;
-  const tone = score >= 80 ? 'ok' : score >= 60 ? 'warn' : score > 40 ? 'warn' : 'bad';
-  const bg = `M ${cx - r} ${cy} A ${r} ${r} 0 0 1 ${cx + r} ${cy}`;
-  const fg = `M ${cx - r} ${cy} A ${r} ${r} 0 ${large} 1 ${ex.toFixed(1)} ${ey.toFixed(1)}`;
+  const cy = 88;
+  const s = Math.max(0, Math.min(100, score));
+  const tone = score >= 80 ? 'ok' : score > 40 ? 'warn' : 'bad';
+  // 왼쪽→오른쪽 반원 호(180도). 배경과 채움이 같은 경로를 쓰고,
+  // pathLength=100으로 길이를 100으로 맞춰 dasharray="점수 100"으로 점수만큼만 채운다(호 계산 버그 없음)
+  const arc = `M ${cx - r} ${cy} A ${r} ${r} 0 0 1 ${cx + r} ${cy}`;
   return `
     <svg class="gauge" viewBox="0 0 180 104" role="img" aria-label="종합 점수 ${Math.round(score)}점">
-      <path class="gauge-bg" d="${bg}" />
-      <path class="gauge-fg gauge-${tone}" d="${fg}" />
-      <text class="gauge-score" x="${cx}" y="78" text-anchor="middle">${Math.round(score)}</text>
-      <text class="gauge-unit" x="${cx}" y="98" text-anchor="middle">점 / 100</text>
+      <path class="gauge-bg" d="${arc}" pathLength="100" />
+      <path class="gauge-fg gauge-${tone}" d="${arc}" pathLength="100"
+            stroke-dasharray="${s.toFixed(1)} 100" />
+      <text class="gauge-score" x="${cx}" y="80" text-anchor="middle">${Math.round(score)}</text>
+      <text class="gauge-unit" x="${cx}" y="99" text-anchor="middle">점 / 100</text>
     </svg>`;
 }
 
