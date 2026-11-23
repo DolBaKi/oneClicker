@@ -155,3 +155,11 @@
 /* 측정 기록 링크 */
 .result-records-link { text-align: center; margin: var(--space-2) 0; }
 .result-records-link a { color: var(--teal); font-weight: 600; }
+
+/* 게이지 설명 + 속도 순위 */
+.gauge-caption { margin: 4px 0 0; text-align: center; font-size: 0.82rem; font-weight: 600; color: var(--ink-2); line-height: 1.3; }
+.gauge-caption span { font-weight: 400; font-size: 0.74rem; color: var(--ink-3); }
+
+.summary-speed { margin-top: var(--space-2); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.speed-label { font-weight: 700; color: var(--ink); font-size: 0.9rem; }
+.speed-help { color: var(--ink-3); font-size: 0.76rem; flex-basis: 100%; }

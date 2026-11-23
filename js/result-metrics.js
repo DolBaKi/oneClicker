@@ -58,25 +58,42 @@ const fmtAvg = {
   retention: pct, cv: (v) => Number(v).toFixed(3),
 };
 
-// 내 값이 평균보다 나은지 판단해 작은 비교 배지를 만든다
-function compareBadge(value, avgKey, direction, averages) {
-  if (!averages || !avgKey || value === null || value === undefined) return '';
-  const avg = averages[avgKey];
-  if (avg === null || avg === undefined) return '';
-  const better = direction === 'low' ? value < avg : value > avg;
-  const same = Math.abs(value - avg) < avg * 0.03; // 3% 이내면 평균 수준
-  const tag = same ? '<span class="cmp cmp-mid">평균 수준</span>'
-    : better ? '<span class="cmp cmp-up">평균보다 좋음</span>'
-      : '<span class="cmp cmp-down">평균보다 낮음</span>';
-  return `<span class="metric-avg">평균 ${fmtAvg[avgKey] ? fmtAvg[avgKey](avg) : avg}</span>${tag}`;
+/*
+  지표 하나의 비교 표시를 만든다. 쌓인 기록과 비교해:
+    - 백분위(migration-006)가 있으면 "상위 X%"로 보여준다. 가장 의미있는 표현이다
+      (속도가 빠른 기기는 발열로 꺾여도 이 순위가 높게 나온다)
+    - 백분위가 없고 평균(migration-004)만 있으면 "평균 X · 평균보다 좋음"
+  pct = "그 값보다 나쁜 기기의 비율"이라, 상위 = 100 - pct.
+*/
+function compareBadge(value, avgKey, direction, averages, percentiles) {
+  if (!avgKey || value === null || value === undefined) return '';
+
+  const pct = percentiles ? percentiles[avgKey] : null;
+  if (pct !== null && pct !== undefined) {
+    const top = Math.max(1, Math.min(100, 100 - Math.round(pct)));
+    const tone = top <= 30 ? 'up' : top <= 70 ? 'mid' : 'down';
+    return `<span class="cmp cmp-${tone}">상위 ${top}%</span>`;
+  }
+
+  if (averages) {
+    const avg = averages[avgKey];
+    if (avg === null || avg === undefined) return '';
+    const better = direction === 'low' ? value < avg : value > avg;
+    const same = Math.abs(value - avg) < avg * 0.03;
+    const tag = same ? '<span class="cmp cmp-mid">평균 수준</span>'
+      : better ? '<span class="cmp cmp-up">평균보다 좋음</span>'
+        : '<span class="cmp cmp-down">평균보다 낮음</span>';
+    return `<span class="metric-avg">평균 ${fmtAvg[avgKey] ? fmtAvg[avgKey](avg) : avg}</span>${tag}`;
+  }
+  return '';
 }
 
-const cell = (value, format, avgKey, direction, averages) => {
+const cell = (value, format, avgKey, direction, averages, percentiles) => {
   if (value === null || value === undefined) return '<dd class="metric-none">측정 못 함</dd>';
-  return `<dd>${format(value)}${compareBadge(value, avgKey, direction, averages)}</dd>`;
+  return `<dd>${format(value)}${compareBadge(value, avgKey, direction, averages, percentiles)}</dd>`;
 };
 
-export function renderMetrics(result, averages = null) {
+export function renderMetrics(result, averages = null, percentiles = null) {
   const groups = metricRows(result);
   document.getElementById('metric-list').innerHTML = Object.entries(groups).map(
     ([title, list]) => `
@@ -85,7 +102,7 @@ export function renderMetrics(result, averages = null) {
         <dl class="metrics">
           ${list.map(([label, value, format, hint, avgKey, direction]) => `
             <dt>${label}<span class="metric-hint">${hint}</span></dt>
-            ${cell(value, format, avgKey, direction, averages)}`).join('')}
+            ${cell(value, format, avgKey, direction, averages, percentiles)}`).join('')}
         </dl>
       </section>`).join('');
 }

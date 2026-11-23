@@ -8,7 +8,7 @@ import { renderSummary } from './summary.js';
 import { stressChart } from './chart.js';
 import { stabilityNote } from './stability.js';
 import { renderMetrics, throttleSummary } from './result-metrics.js';
-import { getMetricAverages } from './stats.js';
+import { getMetricAverages, getMetricPercentiles } from './stats.js';
 import { usageMonths } from './lifespan.js';
 import { captureResult, download } from './capture.js';
 import { renderSpecCompare } from './spec-compare.js';
@@ -43,8 +43,24 @@ if (!result) {
   renderSpecCompare(result); // 모델 목록을 받아야 해서 기다리지 않고 따로 채운다
   renderStress(result);
   renderMetrics(result); // 먼저 값만 그린다
-  // 전체 평균을 받아 "내 값 vs 평균" 비교를 덧그린다 (migration-004 실행 전이면 조용히 건너뜀)
-  getMetricAverages().then((averages) => { if (averages) renderMetrics(result, averages); });
+  /*
+    쌓인 기록과 비교해 지표마다 "상위 X%"(백분위, migration-006)를 덧그린다.
+    백분위가 없으면 평균(migration-004)으로, 둘 다 없으면 값만 보여준다.
+    속도가 빠른 기기는 발열로 꺾여도 이 순위가 제대로 높게 나와, 종합 점수(안정성)만으로는
+    생기던 오해("좋은 GPU인데 지표가 낮다")를 바로잡는다.
+  */
+  const myMetrics = {
+    compute_ms: result.benchmark?.compute?.ms ?? null,
+    memory_ms: result.benchmark?.memory?.ms ?? null,
+    peak_throughput: result.stress?.peak ?? null,
+    sustained_throughput: result.stress?.sustained ?? null,
+    retention: result.stress?.retention ?? null,
+    parallel_speedup: result.parallel?.supported ? result.parallel.speedup : null,
+    parallel_efficiency: result.parallel?.supported ? result.parallel.efficiency : null,
+  };
+  Promise.all([getMetricAverages(), getMetricPercentiles(myMetrics)]).then(([averages, percentiles]) => {
+    if (averages || percentiles) renderMetrics(result, averages, percentiles);
+  });
 
   // 결과를 그림 파일로 저장. 화면을 찍는 게 아니라 측정값으로 새로 그린다
   const captureButton = document.getElementById('capture-button');

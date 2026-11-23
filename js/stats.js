@@ -127,3 +127,38 @@ export async function getRecentMeasurements(limit = 50) {
     return null;
   }
 }
+
+/*
+  지표별 백분위를 가져온다. 내 측정값들을 넘기면 각 지표가 전체 분포에서 어디쯤인지 돌려준다.
+  반환 pct = "그 값보다 나쁜 기기의 비율" → 상위 (100 - pct)%.
+  migration-006 미실행이면 null. 결과 화면은 백분위 없이 평균 비교만 보여준다.
+*/
+export async function getMetricPercentiles(v) {
+  try {
+    const rows = await callRpc('metric_percentiles', {
+      c_ms: v.compute_ms ?? null,
+      m_ms: v.memory_ms ?? null,
+      g_peak: v.peak_throughput ?? null,
+      g_sus: v.sustained_throughput ?? null,
+      g_ret: v.retention ?? null,
+      p_speedup: v.parallel_speedup ?? null,
+      p_eff: v.parallel_efficiency ?? null,
+    });
+    const row = Array.isArray(rows) ? rows[0] : rows;
+    if (!row) return null;
+    const num = (x) => (x == null ? null : Number(x));
+    return {
+      sampleCount: Number(row.sample_count),
+      compute_ms: num(row.compute_pct),
+      memory_ms: num(row.memory_pct),
+      peak_throughput: num(row.peak_pct),
+      sustained_throughput: num(row.sustained_pct),
+      retention: num(row.retention_pct),
+      parallel_speedup: num(row.speedup_pct),
+      parallel_efficiency: num(row.eff_pct),
+    };
+  } catch (error) {
+    console.warn('지표 백분위 조회 실패:', error.message);
+    return null;
+  }
+}
