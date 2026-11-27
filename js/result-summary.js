@@ -6,6 +6,7 @@
 import { getPercentile, getAgeCurve, getMetricPercentiles } from './stats.js';
 import { usageMonths, monthsToReplace, verdict, grade } from './lifespan.js';
 import { scoreGauge, percentileBar, ageCurveChart } from './chart.js';
+import { rankText } from './result-metrics.js';
 
 const box = (id) => document.getElementById(id);
 
@@ -78,7 +79,7 @@ export async function renderSummary(result) {
     const tone = top <= 30 ? 'up' : top <= 70 ? 'mid' : 'down';
     box('summary-speed').innerHTML = `
       <span class="speed-label">속도(성능)</span>
-      <span class="cmp cmp-${tone}">같은 기록 중 상위 ${top}%</span>
+      <span class="cmp cmp-${tone}">같은 기록 중 ${rankText(top)}</span>
       <span class="speed-help">발열 중에도 버틴 처리량 기준 · 안정성과 별개입니다</span>`;
     box('summary-speed').classList.remove('hidden');
   }

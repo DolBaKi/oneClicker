@@ -81,8 +81,10 @@ const MASKED = /^(apple gpu|webkit|mozilla|google inc\.?|generic|software)/i;
 async function readGpu() {
   let gpu = null;
   try { gpu = await readGpuViaWebGPU(); } catch { /* 폴백으로 */ }
-  if (!gpu) {
-    try { gpu = readGpuViaWebGL(); } catch { /* 둘 다 실패 */ }
+  // 크롬의 WebGPU는 이름(device/description)을 비우고 구조명("gcn-4" 등)만 줄 때가 있다.
+  // 그건 사람이 읽을 수 있는 GPU 이름이 아니므로, 그때는 WebGL이 주는 실제 이름을 쓴다
+  if (!gpu || gpu.renderer === gpu.architecture) {
+    try { gpu = readGpuViaWebGL() ?? gpu; } catch { /* WebGL도 실패하면 WebGPU 값 유지 */ }
   }
   if (!gpu) return { supported: false, reason: 'WebGPU·WebGL 모두 사용할 수 없음' };
 

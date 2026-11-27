@@ -2,7 +2,11 @@
 // - 측정한 지표를 그대로 표로 보여준다 (점수로 바꾸지 않는다)
 // - 값마다 "무슨 뜻인지" 한 줄을 붙인다. 숫자만 있으면 좋은 건지 나쁜 건지 알 수 없다
 
+import { normalizeGpuName, shortGpuName } from './models.js';
+
 const pct = (v) => `${Math.round(v * 100)}%`;
+// "ANGLE (Intel, ANGLE Metal Renderer: Intel(R) UHD Graphics 630, ...)" -> "Intel UHD Graphics 630"
+const gpuName = (v) => shortGpuName(normalizeGpuName(v)) || String(v);
 const sec = (v) => `${(v / 1000).toFixed(1)}초`;
 
 /*
@@ -45,7 +49,7 @@ export function metricRows({ benchmark, parallel, stress, hardware }) {
       ['CPU 구조', hardware?.cpu?.architecture, String, '브라우저가 알려주는 범위까지만 나옵니다'],
       ['메모리', hardware?.ram?.value, (v) => `약 ${v} GB`,
         '2의 거듭제곱으로 반올림한 대략값이라 정확한 용량은 알 수 없습니다'],
-      ['GPU', hardware?.gpu?.renderer, String,
+      ['GPU', hardware?.gpu?.renderer, gpuName,
         '브라우저가 이름을 가리는 경우가 있어 비어 있을 수 있습니다'],
     ],
   };
@@ -72,7 +76,7 @@ function compareBadge(value, avgKey, direction, averages, percentiles) {
   if (pct !== null && pct !== undefined) {
     const top = Math.max(1, Math.min(100, 100 - Math.round(pct)));
     const tone = top <= 30 ? 'up' : top <= 70 ? 'mid' : 'down';
-    return `<span class="cmp cmp-${tone}">상위 ${top}%</span>`;
+    return `<span class="cmp cmp-${tone}">${rankText(top)}</span>`;
   }
 
   if (averages) {
@@ -86,6 +90,13 @@ function compareBadge(value, avgKey, direction, averages, percentiles) {
     return `<span class="metric-avg">평균 ${fmtAvg[avgKey] ? fmtAvg[avgKey](avg) : avg}</span>${tag}`;
   }
   return '';
+}
+
+// 상위 50% 안이면 "상위 X%", 그 밖이면 "하위 X%"로 읽기 쉽게. 맨 아래면 "최하위"
+export function rankText(top) {
+  if (top <= 50) return `상위 ${top}%`;
+  const bottom = 100 - top;
+  return bottom <= 0 ? '최하위' : `하위 ${bottom}%`;
 }
 
 const cell = (value, format, avgKey, direction, averages, percentiles) => {

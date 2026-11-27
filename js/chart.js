@@ -110,9 +110,13 @@ export function ageCurveChart(ageCurve, myMonths, myScore) {
     <line class="ac-grid" x1="${pad.l}" y1="${y(s).toFixed(1)}" x2="${w - pad.r}" y2="${y(s).toFixed(1)}" />
     <text class="ac-tick" x="${pad.l - 6}" y="${(y(s) + 3).toFixed(1)}" text-anchor="end">${s}</text>`).join('');
   const dots = ageCurve.map((p) => `<circle class="ac-pt" cx="${x(p.ageMonths).toFixed(1)}" cy="${y(p.avgScore).toFixed(1)}" r="3" />`).join('');
+  // 점이 그래프 양 끝에 붙으면 가운데 정렬한 글씨가 잘린다. 가장자리에서는 안쪽으로 정렬한다
+  const mx = x(myMonths);
+  const anchor = mx > w - pad.r - 40 ? 'end' : mx < pad.l + 40 ? 'start' : 'middle';
+  const lx = anchor === 'end' ? mx + 6 : anchor === 'start' ? mx - 6 : mx;
   const me = (myScore === null || myScore === undefined || myMonths === null) ? '' : `
-    <circle class="ac-me" cx="${x(myMonths).toFixed(1)}" cy="${y(myScore).toFixed(1)}" r="7" />
-    <text class="ac-me-label" x="${x(myMonths).toFixed(1)}" y="${(y(myScore) - 12).toFixed(1)}" text-anchor="middle">내 노트북</text>`;
+    <circle class="ac-me" cx="${mx.toFixed(1)}" cy="${y(myScore).toFixed(1)}" r="7" />
+    <text class="ac-me-label" x="${lx.toFixed(1)}" y="${(y(myScore) - 12).toFixed(1)}" text-anchor="${anchor}">내 노트북</text>`;
   return `
     <svg class="chart ac-chart" viewBox="0 0 ${w} ${h}" role="img" aria-label="연식별 평균 점수와 내 위치">
       ${grid}
